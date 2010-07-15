@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         id="id1"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="singleton-global"
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.ecf.client.jgroups.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="jgClientProduct"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ecf.client.jgroups.id1"
+            name="org.eclipse.ecf.client.jgroups.product">
+         <property
+               name="appName"
+               value="org.eclipse.ecf.client.jgroups.product">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.splashHandlers">
+      <splashHandler
+            class="org.eclipse.ecf.client.jgroups.splashHandlers.InteractiveSplashHandler"
+            id="org.eclipse.ecf.client.jgroups.splashHandlers.interactive">
+      </splashHandler>
+      <splashHandlerProductBinding
+            productId="org.eclipse.ecf.client.jgroups.jgClientProduct"
+            splashId="org.eclipse.ecf.client.jgroups.splashHandlers.interactive">
+      </splashHandlerProductBinding>
+   </extension>
+
+</plugin>

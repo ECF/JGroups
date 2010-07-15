@@ -1,0 +1,22 @@
+*Vertices 7
+*Events
+TI 1
+AV 1 "node1"
+AV 2 "node2"
+AV 3 "node3"
+AV 4 "node4"
+AV 5 "node5"
+AV 6 "node6"
+AV 7 "node7"
+AE 1 2 1
+AE 2 3 1
+AE 3 4 1
+AE 4 5 1
+AE 5 6 1
+AE 6 7 1
+TI 20
+HE 1 2
+AE 1 7 1
+TI 90
+SE 1 2
+HE 1 7

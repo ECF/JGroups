@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         id="Manager"
+         name="JGroups Manager"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            cardinality="*"
+            thread="any"
+            visible="true">
+         <run
+               class="org.eclipse.ecf.internal.server.jgroups.JGroupsManager">
+         </run>
+      </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ecf.server.jgroups.Manager"
+            name="JGroups Manager">
+         <property
+               name="appName"
+               value="JGroups Manager">
+         </property>
+      </product>
+   </extension>
+
+</plugin>

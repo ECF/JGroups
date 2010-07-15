@@ -1,0 +1,88 @@
+*Vertices 25
+*Events
+TI 1
+AV 1 "node1"
+AV 2 "node2"
+AV 3 "node3"
+AV 4 "node4"
+AV 5 "node5"
+AV 6 "node6"
+AV 7 "node7"
+AV 8 "node8"
+AV 9 "node9"
+AV 10 "node10"
+AV 11 "node11"
+AV 12 "node12"
+AV 13 "node13"
+AV 14 "node14"
+AV 15 "node15"
+AV 16 "node16"
+AV 17 "node17"
+AV 18 "node18"
+AV 19 "node19"
+AV 20 "node20"
+AV 21 "node21"
+AV 22 "node22"
+AV 23 "node23"
+AV 24 "node24"
+AV 25 "node25"
+AE 1 2 1
+AE 1 4 1
+AE 1 5 1
+AE 2 3 1
+AE 2 4 1
+AE 4 5 1
+AE 5 15 1
+AE 5 16 1
+AE 6 7 1
+AE 6 8 1
+AE 7 14 1
+AE 8 9 1
+AE 8 22 1
+AE 9 10 1
+AE 9 11 1
+AE 9 12 1
+AE 10 11 1
+AE 10 12 1
+AE 11 12 1
+AE 11 13 1
+AE 12 13 1
+AE 14 15 1
+AE 14 18 1
+AE 14 19 1
+AE 15 16 1
+AE 15 17 1
+AE 15 18 1
+AE 15 19 1
+AE 16 17 1
+AE 17 18 1
+AE 18 19 1
+AE 19 20 1
+AE 19 21 1
+AE 20 21 1
+AE 22 23 1
+AE 22 24 1
+AE 22 25 1
+AE 23 24 1
+AE 23 25 1
+AE 24 25 1
+TI 20
+AE 20 24 1
+HE 23 24
+HE 24 25
+TI 36
+HE 6 8
+HE 7 8
+TI 50
+AE 13 23 1
+AE 8 20 1
+HE 8 9
+TI 66
+HE 20 24
+HE 13 23
+HE 8 20
+SE 23 24
+SE 24 25
+SE 6 8
+SE 7 8
+SE 8 9
