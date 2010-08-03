@@ -31,7 +31,6 @@ public class JGroupsConfigTest extends JGroupsContainerTest {
 				+ "&stackConfigID=" + stackConfigID;
 	}
 
-	@SuppressWarnings("restriction")
 	private boolean testUri(int index) {
 		URI uri = null;
 		try {
