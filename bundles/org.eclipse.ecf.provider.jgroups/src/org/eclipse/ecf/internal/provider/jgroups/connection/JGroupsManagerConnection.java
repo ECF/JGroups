@@ -68,38 +68,20 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 	 */
 	@Override
 	protected Object internalHandleSynch(Message message) {
-		Trace.entering(Activator.PLUGIN_ID,
-				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
-				"internalHandleSynch", new Object[] { message }); //$NON-NLS-1$
 		final Object o = message.getObject();
 		if (o == null) {
 			logMessageError("object in message is null", message);
 			return null;
 		}
 		try {
-			final Serializable[] resp = (Serializable[]) eventHandler
-					.handleSynchEvent(new SynchEvent(this, o));
-			// this resp is an Serializable[] with two messages, one for the
-			// connect response and the other for everyone else
-			if (o instanceof ConnectRequestMessage) {
-				final ConnectResponseMessage crm = new ConnectResponseMessage(
-						(JGroupsID) getLocalID(), ((ConnectRequestMessage) o)
-								.getSenderID(), resp[0]);
-				sendAsynch(null, (byte[]) ((resp == null) ? null : resp[1]));
-				return crm;
-			} else if (o instanceof DisconnectRequestMessage) {
-				return new DisconnectResponseMessage((JGroupsID) getLocalID(),
-						((DisconnectRequestMessage) o).getSenderID(), null);
-			}
-		} catch (final Exception e) {
+			return eventHandler.handleSynchEvent(new SynchEvent(this, o));
+		} catch (final IOException e) {
 			Trace.catching(Activator.PLUGIN_ID,
 					JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 					"internalHandleSynch", e);
+			return null;
 		}
-		Trace.exiting(Activator.PLUGIN_ID,
-				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
-				"respondToRequest");
-		return null;
+		
 	}
 
 	/*
@@ -128,6 +110,12 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			throw new IOException("disconnect timeout");
 		}
 		return response;
+	}
+
+	public Client createClient(JGroupsID remoteID) {
+		Client newclient = new Client(remoteID);
+		newclient.start();
+		return newclient;
 	}
 
 	public class Client implements ISynchAsynchConnection {
@@ -199,17 +187,29 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			return JGroupsManagerConnection.this.sendSynch(receiver, data);
 		}
 
-		public void handleDisconnect() {
+		public DisconnectResponseMessage handleDisconnect(JGroupsID senderID) {
+			DisconnectResponseMessage result = null;
 			synchronized (disconnectLock) {
 				if (!disconnectHandled) {
 					disconnectHandled = true;
 					eventHandler.handleDisconnectEvent(new DisconnectEvent(
 							Client.this, null, null));
+					result = new DisconnectResponseMessage((JGroupsID) getLocalID(),
+							senderID, null);
 				}
 			}
 			synchronized (Client.this) {
 				Client.this.notifyAll();
 			}
+			return result;
+		}
+		
+		public ConnectResponseMessage createConnectResponseMessage(JGroupsID senderID, Serializable[] resp) throws IOException {
+			// send second resp array value
+			sendAsynch(null, (byte[]) resp[1]);
+			// return new Connect response message with first array value
+			return new ConnectResponseMessage(
+					(JGroupsID) getLocalID(), senderID, resp[0]);
 		}
 	}
 
@@ -241,9 +241,7 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 				for (final Iterator i = departed.iterator(); i.hasNext();) {
 					final Address addr = (Address) i.next();
 					final Client client = getClientForAddress(addr);
-					if (client != null) {
-						handleDisconnectInThread(client);
-					}
+					if (client != null) handleDisconnectInThread(client);
 				}
 			}
 			oldView = view;

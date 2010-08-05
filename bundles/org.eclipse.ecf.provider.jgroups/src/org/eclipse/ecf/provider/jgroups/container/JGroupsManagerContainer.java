@@ -33,6 +33,7 @@ import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
 import org.eclipse.ecf.internal.provider.jgroups.Messages;
 import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.internal.provider.jgroups.connection.ConnectRequestMessage;
+import org.eclipse.ecf.internal.provider.jgroups.connection.ConnectResponseMessage;
 import org.eclipse.ecf.internal.provider.jgroups.connection.DisconnectRequestMessage;
 import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsManagerConnection;
 import org.eclipse.ecf.provider.comm.IAsynchConnection;
@@ -128,12 +129,16 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 					(JGroupsManagerConnection) e.getConnection());
 		} else if (req instanceof DisconnectRequestMessage) {
 			// disconnect them
-			final DisconnectRequestMessage dcm = (DisconnectRequestMessage) req;
-			final IAsynchConnection conn = getConnectionForID(dcm.getSenderID());
-			if (conn != null && conn instanceof JGroupsManagerConnection.Client) {
-				final JGroupsManagerConnection.Client client = (JGroupsManagerConnection.Client) conn;
-				client.handleDisconnect();
-			}
+			return handleDisconnectRequest(((DisconnectRequestMessage) req).getSenderID());
+		}
+		return null;
+	}
+	
+	protected Serializable handleDisconnectRequest(JGroupsID senderID) {
+		final IAsynchConnection conn = getConnectionForID(senderID);
+		if (conn != null && conn instanceof JGroupsManagerConnection.Client) {
+			final JGroupsManagerConnection.Client client = (JGroupsManagerConnection.Client) conn;
+			return client.handleDisconnect(senderID);
 		}
 		return null;
 	}
@@ -190,8 +195,7 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 				throw new InvalidObjectException(
 						Messages.JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
 			ID memberIDs[] = null;
-			final Serializable[] messages = new Serializable[2];
-			JGroupsManagerConnection.Client newclient = null;
+			ConnectResponseMessage crm = null;
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
 					throw new ContainerConnectException(
@@ -207,33 +211,31 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 				checkJoin(new InetSocketAddress(host, port), jgid, request
 						.getTargetID().getChannelName(), jgm.getData());
 
-				newclient = connection.new Client(jgid);
+				JGroupsManagerConnection.Client newclient = connection.createClient(jgid);
 
+				final Serializable[] messages = new Serializable[2];
+				ID localID = getID();
+				
 				if (addNewRemoteMember(jgid, newclient)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
+					// Create first view change message...this one is for the ConnectResponseMessage (returned from sendConnectResponse below)
+					messages[0] = serialize(ContainerMessage.createViewChangeMessage(
+							localID, jgid, getNextSequenceNumber(), memberIDs, true,
+							null));
 					// Notify existing remotes about new member
 					messages[1] = serialize(ContainerMessage
-							.createViewChangeMessage(getID(), null,
+							.createViewChangeMessage(localID, null,
 									getNextSequenceNumber(), new ID[] { jgid },
 									true, null));
-				} else {
-					final ConnectException e = new ConnectException(
+					
+					crm = newclient.createConnectResponseMessage(request.getSenderID(), messages);
+				} else throw new ConnectException(
 							Messages.JGroupsServer_CONNECT_EXCEPTION_REFUSED);
-					throw e;
-				}
 			}
 			// notify listeners
 			fireContainerEvent(new ContainerConnectedEvent(this.getID(), jgid));
-
-			messages[0] = serialize(ContainerMessage.createViewChangeMessage(
-					getID(), jgid, getNextSequenceNumber(), memberIDs, true,
-					null));
-
-			newclient.start();
-
-			return messages;
-
+			return crm;
 		} catch (final Exception e) {
 			traceAndLogExceptionCatch(IStatus.ERROR, "handleConnectRequest", e);
 			return null;
