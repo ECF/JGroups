@@ -18,14 +18,12 @@ import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
-import org.eclipse.ecf.internal.provider.jgroups.Messages;
 import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
@@ -65,13 +63,10 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		if (targetID == null)
 			throw new ContainerConnectException("TargetID must not be null");//$NON-NLS-1$
 		if (!(targetID instanceof JGroupsID))
-			throw new ContainerConnectException(
-					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
+			throw new ContainerConnectException("targetID not instanceof JGroupsID"); //$NON-NLS-1$
 		if (!(data instanceof Serializable)) {
-			throw new ContainerConnectException(
-					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR,
-					new NotSerializableException(
-							Messages.JGroupsClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE));
+			throw new ContainerConnectException("Connect data not serializable",
+					new NotSerializableException());
 		}
 		Object result = null;
 		try {
@@ -84,18 +79,12 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			final ECFException except = e;
 			throw new ContainerConnectException(except.getStatus());
 		} catch (final Exception e) {
-			throw new ContainerConnectException(
-					NLS
-							.bind(
-									Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED,
-									targetID.getName()), e);
+			throw new ContainerConnectException("Connect to targetID="+targetID.getName()+" failed",e);
 		}
 		if (result == null)
-			throw new ContainerConnectException(
-					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
+			throw new ContainerConnectException("Connect to targetID="+targetID.getName()+" refused");
 		if (!(result instanceof ConnectResponseMessage))
-			throw new ContainerConnectException(
-					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
+			throw new ContainerConnectException("Invalid connect response");
 		Object connectResponseResult = null;
 		try {
 			connectResponseResult = SOContainer

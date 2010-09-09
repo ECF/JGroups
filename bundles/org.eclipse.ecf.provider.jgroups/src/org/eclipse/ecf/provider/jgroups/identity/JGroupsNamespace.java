@@ -13,7 +13,6 @@ import java.net.URI;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.osgi.util.NLS;
 
 public class JGroupsNamespace extends Namespace {
 
@@ -45,8 +44,8 @@ public class JGroupsNamespace extends Namespace {
 		} catch (final Exception e) {
 			if (e instanceof IDCreateException)
 				throw (IDCreateException) e;
-			throw new IDCreateException(NLS.bind(
-					"{0} createInstance()", getName()), e); //$NON-NLS-1$
+			throw new IDCreateException(
+					getName()+" createInstance()", e); //$NON-NLS-1$
 		}
 	}
 

@@ -30,7 +30,6 @@ import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
-import org.eclipse.ecf.internal.provider.jgroups.Messages;
 import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.internal.provider.jgroups.connection.ConnectRequestMessage;
 import org.eclipse.ecf.internal.provider.jgroups.connection.ConnectResponseMessage;
@@ -178,8 +177,7 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 			final ContainerMessage containerMessage = (ContainerMessage) request
 					.getData();
 			if (containerMessage == null)
-				throw new InvalidObjectException(
-						Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
+				throw new InvalidObjectException("ContainerMessage cannot be null");
 			final ID remoteID = containerMessage.getFromContainerID();
 			if (remoteID == null)
 				throw new InvalidObjectException("remoteID cannot be null");
@@ -192,14 +190,12 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 			final ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage
 					.getData();
 			if (jgm == null)
-				throw new InvalidObjectException(
-						Messages.JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
+				throw new InvalidObjectException("JoinGroupMessage cannot be null");
 			ID memberIDs[] = null;
 			ConnectResponseMessage crm = null;
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
-					throw new ContainerConnectException(
-							Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
+					throw new ContainerConnectException("Container is closing");
 				final Address address = jgid.getAddress();
 				int port = -1;
 				InetAddress host = null;
@@ -230,8 +226,7 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 									true, null));
 					
 					crm = newclient.createConnectResponseMessage(request.getSenderID(), messages);
-				} else throw new ConnectException(
-							Messages.JGroupsServer_CONNECT_EXCEPTION_REFUSED);
+				} else throw new ConnectException("Connection refused");
 			}
 			// notify listeners
 			fireContainerEvent(new ContainerConnectedEvent(this.getID(), jgid));

@@ -28,7 +28,6 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.View;
@@ -252,8 +251,7 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		final Thread t = new Thread(new Runnable() {
 			public void run() {
 				eventHandler.handleDisconnectEvent(new DisconnectEvent(client,
-						new Exception(NLS.bind("member %1 disconnected",
-								client.clientID)), null));
+						new Exception("member "+client.clientID+" disconnected"), null));
 			}
 		});
 		t.start();

@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.BaseID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 
 /**
@@ -76,8 +75,8 @@ public class JGroupsID extends BaseID {
 		this.uri = uri;
 		final String scheme = this.uri.getScheme();
 		if (scheme == null || !scheme.equalsIgnoreCase(ns.getScheme()))
-			throw new IDCreateException(NLS.bind("scheme must be {0}", ns
-					.getScheme()));
+			throw new IDCreateException("scheme must be "+ns
+					.getScheme());
 		;
 		final String path = getPathNoSlashes();
 		if (path == null || path.length() < 1)

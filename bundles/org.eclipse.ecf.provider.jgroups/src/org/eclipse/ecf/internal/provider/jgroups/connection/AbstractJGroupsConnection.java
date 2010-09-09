@@ -29,7 +29,6 @@ import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.ChannelClosedException;
@@ -237,9 +236,8 @@ public abstract class AbstractJGroupsConnection implements
 			throws IOException;
 
 	protected void logMessageError(String errorString, Message message) {
-		final String messageError = NLS.bind(
-				"jgroups message receive error.  error=%1 message=%2",
-				errorString, message);
+		final String messageError = 
+				"jgroups message receive error.  error="+errorString+" message="+message;
 		Activator.getDefault().log(
 				new Status(IStatus.ERROR, Activator.PLUGIN_ID, messageError,
 						null));
