@@ -11,20 +11,19 @@
 package org.eclipse.ecf.internal.provider.jgroups.ui;
 
 import org.eclipse.core.resources.IResource;
-import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.NullProgressMonitor;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerManager;
+import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.ecf.ui.IConnectWizard;
+import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.osgi.util.NLS;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
@@ -35,10 +34,10 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 		super();
 	}
 
-	protected static final String PAGE_TITLE = Messages.JoinGroupWizard_CONNECT;
-
 	private static final String DIALOG_SETTINGS = JoinGroupWizard.class
 			.getName();
+
+	private static final String GROUP_PROTOCOL = "JGroups";
 
 	JoinGroupWizardPage mainPage;
 	private IResource resource;
@@ -50,7 +49,7 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 	public JoinGroupWizard(IResource resource, IWorkbench workbench) {
 		super();
 		this.resource = resource;
-		setWindowTitle(PAGE_TITLE);
+		setWindowTitle(Messages.JoinGroupWizardPage_CONNECT_JGROUPS_TITLE);
 		final IDialogSettings dialogSettings = ClientPlugin.getDefault()
 				.getDialogSettings();
 		IDialogSettings wizardSettings = dialogSettings
@@ -72,23 +71,23 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 	}
 
 	public void addPages() {
-		super.addPages();
 		mainPage = new JoinGroupWizardPage(connectID);
 		addPage(mainPage);
 	}
 
-	public boolean performFinish() {
-		try {
-			finishPage(new NullProgressMonitor());
-		} catch (final Exception e) {
-			e.printStackTrace();
-			return false;
+	public boolean performCancel() {
+		container.dispose();
+
+		IContainerManager containerManager = Activator.getDefault()
+				.getContainerManager();
+		if (containerManager != null) {
+			containerManager.removeContainer(container);
 		}
-		return true;
+
+		return super.performCancel();
 	}
 
-	protected void finishPage(final IProgressMonitor monitor)
-			throws InterruptedException, CoreException {
+	public boolean performFinish() {
 
 		mainPage.saveDialogSettings();
 		URIClientConnectAction client = null;
@@ -96,16 +95,22 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 		final String nickName = mainPage.getNicknameText();
 		final String containerType = mainPage.getContainerType();
 		final boolean autoLogin = mainPage.getAutoLoginFlag();
-		try {
-			client = new URIClientConnectAction(containerType, groupName,
-					nickName, "", resource, autoLogin); //$NON-NLS-1$
-			client.run(null);
-		} catch (final Exception e) {
-			final String id = ClientPlugin.getDefault().getBundle()
-					.getSymbolicName();
-			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR,
-					NLS.bind(Messages.JoinGroupWizard_COULD_NOT_CONNECT,
-							groupName), e));
+		client = new URIClientConnectAction(containerType, groupName, nickName,
+				"", resource, autoLogin); //$NON-NLS-1$
+		client.run(null);
+
+		final IChatRoomManager manager = (IChatRoomManager) this.container
+				.getAdapter(IChatRoomManager.class);
+		final JGroupsUI ui = new JGroupsUI(this.container, manager, null);
+		ui.showForTarget(IDFactory.getDefault().createID(JGroupsNamespace.NAME, groupName));
+		return true;
+	}
+
+	protected void cachePassword(final String connectID, String password) {
+		if (password != null && !password.equals("")) {
+			final PasswordCacheHelper pwStorage = new PasswordCacheHelper(
+					connectID);
+			pwStorage.savePassword(password);
 		}
 	}
 
@@ -118,13 +123,14 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 			// None
 		}
 
-		setWindowTitle(PAGE_TITLE);
+		setWindowTitle(Messages.JoinGroupWizardPage_CONNECT_JGROUPS_TITLE);
 
 	}
 
 	public void init(IWorkbench workbench, IContainer container) {
 		this.container = container;
 
-		setWindowTitle(Messages.JoinGroupWizardPage_PROTOCOL);
+		setWindowTitle(Messages.JoinGroupWizardPage_PROTOCOL + " "
+				+ GROUP_PROTOCOL);
 	}
 }

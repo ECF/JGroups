@@ -75,7 +75,8 @@ public class Messages extends NLS {
 	public static String JoinGroupWizardPage_JGROUPS_TEMPLATE;
 	public static String JoinGroupWizardPage_CONNECT_JGROUPS_TITLE;
 	public static String JoinGroupWizardPage_DEFAULT_JGROUPS_SERVER;
-
+	public static String JoinGroupWizardPage_TITLE;
+	// JGroups fin
 	public static String LineChatClientView_CHANGED_NAME_TO;
 	public static String LineChatClientView_EXCEPTION_MSGBOX_TEXT;
 	public static String LineChatClientView_EXCEPTION_MSGBOX_TITLE;
