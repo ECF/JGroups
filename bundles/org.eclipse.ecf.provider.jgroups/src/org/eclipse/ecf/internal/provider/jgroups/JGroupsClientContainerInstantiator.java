@@ -18,6 +18,8 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer;
@@ -41,8 +43,7 @@ public class JGroupsClientContainerInstantiator extends
 					.contains(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME)
 					|| supportedConfigs.contains(JGROUPS_CLIENT_NAME)) {
 				results.add(JGROUPS_CLIENT_NAME);
-				results
-						.add(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME);
+				results.add(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME);
 			}
 		}
 		if (results.size() == 0)
@@ -54,13 +55,6 @@ public class JGroupsClientContainerInstantiator extends
 		return new String[] { JGROUPS_CLIENT_NAME };
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance
-	 * (org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
-	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
 		try {
@@ -90,12 +84,14 @@ public class JGroupsClientContainerInstantiator extends
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @seeorg.eclipse.ecf.core.provider.BaseContainerInstantiator#
-	 * getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
+	@Override
+	public String[] getSupportedAdapterTypes(
+			ContainerTypeDescription description) {
+
+		return new String[] { IChatRoomManager.class.getName(),
+				IPresenceContainerAdapter.class.getName() };
+	}
+
 	public Class[][] getSupportedParameterTypes(
 			ContainerTypeDescription description) {
 		return new Class[][] { { JGroupsID.class }, { String.class }, {} };

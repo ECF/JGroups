@@ -21,10 +21,12 @@ public class Messages extends NLS {
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION;
+	public static String jGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_WAITING;
 	public static String JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING;
 	public static String JGroupsServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL;
 	public static String JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL;
 	public static String JGroupsServer_CONNECT_EXCEPTION_REFUSED;
+	public static String JGroupsClientContainer_Exception_Create_ChatRoom;
 
 	static {
 		// initialize resource bundle
