@@ -22,7 +22,7 @@ import org.osgi.framework.BundleContext;
  * The main plug-in class to be used in the desktop.
  */
 public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConstants {
-	public static final String PLUGIN_ID = "org.eclipse.ecf.example.collab"; //$NON-NLS-1$
+	public static final String PLUGIN_ID = "org.eclipse.ecf.internal.provider.jgroups.ui"; //$NON-NLS-1$
 
 	public static final String COLLABORATION_IMAGE = "collaboration"; //$NON-NLS-1$
 

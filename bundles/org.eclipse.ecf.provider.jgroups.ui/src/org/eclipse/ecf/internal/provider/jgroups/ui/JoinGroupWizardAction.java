@@ -14,6 +14,8 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
@@ -37,6 +39,9 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 	private IWorkbenchWindow window;
 
 	private String connectID = null;
+	private IContainer client;
+	private ID targetID;
+	private String nickName;
 	
 	public JoinGroupWizardAction() {
 		super();
@@ -47,12 +52,20 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 		this.connectID = connectID;
 	}
 	
+	public JoinGroupWizardAction(IContainer container, ID targetID,
+			String nickName) {
+		this();
+		this.client = container;
+		this.targetID = targetID;
+		this.nickName = nickName;
+	}
+
 	private ClientEntry isConnected(IResource res) {
 		if (res == null)
 			return null;
 		CollabClient client = CollabClient.getDefault();
 		ClientEntry entry = client.isConnected(res,
-				CollabClient.GENERIC_CONTAINER_CLIENT_NAME);
+				CollabClient.JGROUPS_CONTAINER_CLIENT_NAME);
 		return entry;
 	}
 
@@ -73,8 +86,7 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 
 	public void run(IAction action) {
 		if (!connected) {
-			JoinGroupWizard wizard = new JoinGroupWizard(resource, PlatformUI
-					.getWorkbench(), connectID);
+			JoinGroupWizard wizard = new JoinGroupWizard(resource, PlatformUI.getWorkbench(), connectID);
 			Shell shell = null;
 			if (targetPart == null) {
 				shell = (window == null)?null:window.getShell();

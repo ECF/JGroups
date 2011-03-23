@@ -17,7 +17,7 @@ import org.eclipse.osgi.util.NLS;
  *
  */
 public class Messages extends NLS {
-	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.example.collab.messages"; //$NON-NLS-1$
+	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.jgroups.ui.messages"; //$NON-NLS-1$
 	public static String AccountStart_EXCEPTION_LOADING_CONNECTION_DETAILS;
 	public static String AccountStart_EXCEPTION_SAVING_CONNECTION_DETAILS;
 	public static String AutoLoginPreferencePage_URILISTEDITOR_TEXT;
@@ -71,6 +71,11 @@ public class Messages extends NLS {
 	public static String JoinGroupWizardPage_NICKNAME_CANNOT_BE_EMPTY;
 	public static String JoinGroupWizardPage_PROTOCOL;
 	public static String JoinGroupWizardPage_TEMPLATE;
+	// JGroups
+	public static String JoinGroupWizardPage_JGROUPS_TEMPLATE;
+	public static String JoinGroupWizardPage_CONNECT_JGROUPS_TITLE;
+	public static String JoinGroupWizardPage_DEFAULT_JGROUPS_SERVER;
+
 	public static String LineChatClientView_CHANGED_NAME_TO;
 	public static String LineChatClientView_EXCEPTION_MSGBOX_TEXT;
 	public static String LineChatClientView_EXCEPTION_MSGBOX_TITLE;

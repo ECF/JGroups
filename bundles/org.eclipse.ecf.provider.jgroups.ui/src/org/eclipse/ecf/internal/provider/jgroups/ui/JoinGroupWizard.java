@@ -17,35 +17,52 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.ecf.core.ContainerCreateException;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.osgi.util.NLS;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class JoinGroupWizard extends Wizard {
+public class JoinGroupWizard extends Wizard implements IConnectWizard,
+		INewWizard {
+
+	public JoinGroupWizard() {
+		super();
+	}
 
 	protected static final String PAGE_TITLE = Messages.JoinGroupWizard_CONNECT;
 
-	private static final String DIALOG_SETTINGS = JoinGroupWizard.class.getName();
+	private static final String DIALOG_SETTINGS = JoinGroupWizard.class
+			.getName();
 
 	JoinGroupWizardPage mainPage;
-	private final IResource resource;
+	private IResource resource;
 
 	private String connectID;
+
+	private IContainer container;
 
 	public JoinGroupWizard(IResource resource, IWorkbench workbench) {
 		super();
 		this.resource = resource;
 		setWindowTitle(PAGE_TITLE);
-		final IDialogSettings dialogSettings = ClientPlugin.getDefault().getDialogSettings();
-		IDialogSettings wizardSettings = dialogSettings.getSection(DIALOG_SETTINGS);
+		final IDialogSettings dialogSettings = ClientPlugin.getDefault()
+				.getDialogSettings();
+		IDialogSettings wizardSettings = dialogSettings
+				.getSection(DIALOG_SETTINGS);
 		if (wizardSettings == null)
 			wizardSettings = dialogSettings.addNewSection(DIALOG_SETTINGS);
 
 		setDialogSettings(wizardSettings);
 	}
 
-	public JoinGroupWizard(IResource resource, IWorkbench workbench, String connectID) {
+	public JoinGroupWizard(IResource resource, IWorkbench workbench,
+			String connectID) {
 		this(resource, workbench);
 		this.connectID = connectID;
 	}
@@ -70,7 +87,8 @@ public class JoinGroupWizard extends Wizard {
 		return true;
 	}
 
-	protected void finishPage(final IProgressMonitor monitor) throws InterruptedException, CoreException {
+	protected void finishPage(final IProgressMonitor monitor)
+			throws InterruptedException, CoreException {
 
 		mainPage.saveDialogSettings();
 		URIClientConnectAction client = null;
@@ -79,11 +97,34 @@ public class JoinGroupWizard extends Wizard {
 		final String containerType = mainPage.getContainerType();
 		final boolean autoLogin = mainPage.getAutoLoginFlag();
 		try {
-			client = new URIClientConnectAction(containerType, groupName, nickName, "", resource, autoLogin); //$NON-NLS-1$
+			client = new URIClientConnectAction(containerType, groupName,
+					nickName, "", resource, autoLogin); //$NON-NLS-1$
 			client.run(null);
 		} catch (final Exception e) {
-			final String id = ClientPlugin.getDefault().getBundle().getSymbolicName();
-			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR, NLS.bind(Messages.JoinGroupWizard_COULD_NOT_CONNECT, groupName), e));
+			final String id = ClientPlugin.getDefault().getBundle()
+					.getSymbolicName();
+			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR,
+					NLS.bind(Messages.JoinGroupWizard_COULD_NOT_CONNECT,
+							groupName), e));
 		}
+	}
+
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.container = null;
+		try {
+			this.container = ContainerFactory.getDefault().createContainer(
+					"ecf.jgroups.client");
+		} catch (final ContainerCreateException e) {
+			// None
+		}
+
+		setWindowTitle(PAGE_TITLE);
+
+	}
+
+	public void init(IWorkbench workbench, IContainer container) {
+		this.container = container;
+
+		setWindowTitle(Messages.JoinGroupWizardPage_PROTOCOL);
 	}
 }

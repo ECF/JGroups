@@ -32,6 +32,7 @@ public class CollabClient {
 	public static final String WORKSPACE_NAME = Messages.CollabClient_WORKSPACE_NAME;
 
 	public static final String GENERIC_CONTAINER_CLIENT_NAME = GenericContainerInstantiator.TCPCLIENT_NAME;
+	public static final String JGROUPS_CONTAINER_CLIENT_NAME = "ecf.jgroups.client";
 
 	static Hashtable clients = new Hashtable();
 
@@ -197,9 +198,9 @@ public class CollabClient {
 	}
 
 	public synchronized static ISharedObjectContainer getContainer(IResource proj) {
-		ClientEntry entry = getClientEntry(proj, GENERIC_CONTAINER_CLIENT_NAME);
+		ClientEntry entry = getClientEntry(proj, JGROUPS_CONTAINER_CLIENT_NAME);
 		if (entry == null) {
-			entry = getClientEntry(ResourcesPlugin.getWorkspace().getRoot(), GENERIC_CONTAINER_CLIENT_NAME);
+			entry = getClientEntry(ResourcesPlugin.getWorkspace().getRoot(), JGROUPS_CONTAINER_CLIENT_NAME);
 		}
 		if (entry != null) {
 			IContainer cont = entry.getContainer();

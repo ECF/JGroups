@@ -25,7 +25,7 @@
       <wizard
             class="org.eclipse.ecf.internal.provider.jgroups.ui.JoinGroupWizard"
             id="org.eclipse.ecf.provider.ui.jgroups.connect"
-            name="JavaGroups"
+            name="%newWizards.name.JavaGroups"
             icon="icons/collaboration.gif"
             category="org.eclipse.ecf.ui.newConnection.category"
             finalPerspective="org.eclipse.ecf.ui.perspective.communications">
@@ -38,7 +38,7 @@
                class="org.eclipse.ecf.internal.provider.jgroups.ui.JoinGroupWizard"
                containerFactoryName="ecf.jgroups.client"
                id="org.eclipse.ecf.provider.ui.jgroups.connect"
-               name="name">
+               name="%connectWizards.name.JGroups">
          </wizard>
       </extension>
    

@@ -35,15 +35,15 @@ public class JoinGroupWizardPage extends WizardPage {
 	protected static final String PAGE_DESCRIPTION = Messages.JoinGroupWizardPage_COMPLETE_ACCOUNT_INFO;
 	protected static final String JOINGROUP_FIELDNAME = Messages.JoinGroupWizardPage_GROUPID;
 	protected static final String NICKNAME_FIELDNAME = Messages.JoinGroupWizardPage_NICKNAME;
-	protected static final String ECF_DEFAULT_URL = Messages.JoinGroupWizardPage_DEFAULT_SERVER;
-	protected static final String ECF_TEMPLATE_URL = Messages.JoinGroupWizardPage_TEMPLATE;
-	protected static final String PAGE_TITLE = Messages.JoinGroupWizardPage_CONNECT_GENERIC_TITLE;
+	protected static final String JGROUPS_DEFAULT_URL = Messages.JoinGroupWizardPage_DEFAULT_JGROUPS_SERVER;
+	protected static final String JGROUPS_TEMPLATE_URL = Messages.JoinGroupWizardPage_JGROUPS_TEMPLATE;
+	protected static final String PAGE_TITLE = Messages.JoinGroupWizardPage_CONNECT_JGROUPS_TITLE;
 
-	protected static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
+	protected static final String DEFAULT_CLIENT = "ecf.jgroups.client"; //$NON-NLS-1$
 
 	private static final String DIALOG_SETTINGS = CLASSNAME;
 
-	private String connectID = null;
+	private String targetID = null;
 
 	public JoinGroupWizardPage() {
 		super("wizardPage"); //$NON-NLS-1$
@@ -57,11 +57,11 @@ public class JoinGroupWizardPage extends WizardPage {
 		setTitle(PAGE_TITLE);
 		setDescription(PAGE_DESCRIPTION);
 		setImageDescriptor(SharedImages.getImageDescriptor(SharedImages.IMG_COLLABORATION_WIZARD));
-		this.connectID = connectID;
+		this.targetID = connectID;
 	}
 
-	protected String template_url = ECF_TEMPLATE_URL;
-	protected String default_url = ECF_DEFAULT_URL;
+	protected String template_url = JGROUPS_TEMPLATE_URL;
+	protected String default_url = JGROUPS_DEFAULT_URL;
 
 	protected Text nicknameText;
 	protected Text joinGroupText;
@@ -137,8 +137,8 @@ public class JoinGroupWizardPage extends WizardPage {
 
 		fillCombo();
 		restoreDialogSettings();
-		if (connectID != null) {
-			joinGroupText.setText(connectID);
+		if (targetID != null) {
+			joinGroupText.setText(targetID);
 		}
 		org.eclipse.jface.dialogs.Dialog.applyDialogFont(parent);
 	}
