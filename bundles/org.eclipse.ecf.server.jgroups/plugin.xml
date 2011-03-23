@@ -3,7 +3,7 @@
 <plugin>
 
    <extension
-         id="Manager"
+         id="org.eclipse.ecf.server.jgroups.Manager"
          name="JGroups Manager"
          point="org.eclipse.core.runtime.applications">
       <application
@@ -16,7 +16,7 @@
       </application>
    </extension>
    <extension
-         id="product"
+         id="jgManagerProduct"
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.ecf.server.jgroups.Manager"

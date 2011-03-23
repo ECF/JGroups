@@ -23,7 +23,7 @@
       <extension
          point="org.eclipse.ui.newWizards">
       <wizard
-            class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizard"
+            class="org.eclipse.ecf.internal.provider.jgroups.ui.JoinGroupWizard"
             id="org.eclipse.ecf.provider.ui.jgroups.connect"
             name="JavaGroups"
             icon="icons/collaboration.gif"
@@ -35,10 +35,10 @@
       <extension
             point="org.eclipse.ecf.ui.connectWizards">
          <wizard
-               class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizard"
+               class="org.eclipse.ecf.internal.provider.jgroups.ui.JoinGroupWizard"
                containerFactoryName="ecf.jgroups.client"
                id="org.eclipse.ecf.provider.ui.jgroups.connect"
-               name="%wizardLabel">
+               name="name">
          </wizard>
       </extension>
    

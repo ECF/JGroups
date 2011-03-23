@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JGroups Manager" uid="org.eclipse.ecf.server.jgroups" id="org.eclipse.ecf.server.jgroups.product" application="org.eclipse.ecf.server.jgroups.Manager" version="1.0.0" useFeatures="false" includeLaunchers="false">
+<product name="JGroups Manager" uid="org.eclipse.ecf.server.jgroups" id="org.eclipse.ecf.server.jgroups.jgManagerProduct" application="org.eclipse.ecf.server.jgroups.Manager" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} jgroups:///exampleChannel</programArgs>
+      <programArgs>-clean -os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} jgroups:///sampleChannel</programArgs>
       <vmArgs>-Xms100m -Xmx512m -Djava.net.preferIPv4Stack=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -33,11 +33,13 @@
       <plugin id="org.eclipse.ecf.datashare"/>
       <plugin id="org.eclipse.ecf.discovery"/>
       <plugin id="org.eclipse.ecf.identity"/>
+      <plugin id="org.eclipse.ecf.presence"/>
       <plugin id="org.eclipse.ecf.provider"/>
       <plugin id="org.eclipse.ecf.provider.datashare"/>
       <plugin id="org.eclipse.ecf.provider.jgroups"/>
       <plugin id="org.eclipse.ecf.provider.remoteservice"/>
       <plugin id="org.eclipse.ecf.remoteservice"/>
+      <plugin id="org.eclipse.ecf.remoteservice.eventadmin"/>
       <plugin id="org.eclipse.ecf.server.jgroups"/>
       <plugin id="org.eclipse.ecf.sharedobject"/>
       <plugin id="org.eclipse.ecf.ssl" fragment="true"/>

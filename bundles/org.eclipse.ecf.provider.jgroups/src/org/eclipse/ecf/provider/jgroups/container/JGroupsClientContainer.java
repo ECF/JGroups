@@ -8,50 +8,35 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jgroups.container;
 
-import java.util.Properties;
-
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsClientConnection;
+import org.eclipse.ecf.presence.IAccountManager;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
+import org.eclipse.ecf.presence.im.IChatManager;
+import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
-import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.jgroups.Channel;
-import org.osgi.framework.BundleContext;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventAdmin;
-import org.osgi.service.event.EventConstants;
 
 /**
  * Trivial container implementation. that container adapter implementations can
  * be provided by the container class to expose appropriate adapters.
  */
-public class JGroupsClientContainer extends ClientSOContainer implements
-		EventAdmin {
+public class JGroupsClientContainer extends ClientSOContainer implements IPresenceContainerAdapter {
 
-	private final DistributedEventAdmin eventAdminImpl;
 	
 	public JGroupsClientContainer(SOContainerConfig config)
 			throws IDCreateException {
 		super(config);
-		// hook in context for events
-		final BundleContext context = Activator.getDefault().getContext();
-		eventAdminImpl = new DistributedEventAdmin(context);
-		eventAdminImpl.start();
-
-		// register as EventAdmin service instance
-		Properties props0 = new Properties();
-		props0.put(EventConstants.EVENT_TOPIC, "*");
-		context.registerService(
-				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
-
 	}
 
 	@Override
@@ -74,12 +59,29 @@ public class JGroupsClientContainer extends ClientSOContainer implements
 		}
 	}
 
-	public void postEvent(Event event) {
-		this.eventAdminImpl.postEvent(event);
+	public IRosterManager getRosterManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void sendEvent(Event event) {
-		this.eventAdminImpl.sendEvent(event);
+	public IChatManager getChatManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IAccountManager getAccountManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IChatRoomManager getChatRoomManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IUserSearchManager getUserSearchManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
