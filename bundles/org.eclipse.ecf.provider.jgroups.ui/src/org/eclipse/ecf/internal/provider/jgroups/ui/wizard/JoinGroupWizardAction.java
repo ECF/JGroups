@@ -29,12 +29,7 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 		IWorkbenchWindowActionDelegate {
 
 	private IResource resource;
-	private boolean connected = false;
-	private IWorkbenchPart targetPart;
-	private IWorkbenchWindow window;
-
 	private ID targetID = null;
-	private String nickName;
 	private IContainer client;
 
 	public JoinGroupWizardAction() {
@@ -46,7 +41,6 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 		this();
 		this.client = container;
 		this.targetID = targetID;
-		this.nickName = nickName;
 	}
 
 	private void setAction(IAction action, IResource resource) {
@@ -54,7 +48,6 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 	}
 
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		this.targetPart = targetPart;
 	}
 
 	public void run(IAction action) {
@@ -93,7 +86,6 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 	}
 
 	public void init(IWorkbenchWindow window) {
-		this.window = window;
 	}
 
 	protected String getClientContainerName() {

@@ -24,7 +24,6 @@ import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.internal.provider.jgroups.ui.Activator;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
@@ -111,6 +110,7 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 		JoinGroupWizardAction client = null;
 		final String targetURI = mainPage.getJoinGroupText();
 		final String connectID = mainPage.getNicknameText();
+		@SuppressWarnings("unused")
 		final String containerType = JGroups.CLIENT_CONTAINER_NAME; // TODO [pierre] change to extension point value
 		
 		try {
