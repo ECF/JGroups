@@ -55,23 +55,29 @@ public class JGroupsChannelTest extends ChannelTest {
 	}
 
 	protected ID createServerID() throws Exception {
-		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(getJGroupsNamespace()), new Object[] {getServerIdentity()});
+		return IDFactory.getDefault().createID(
+				IDFactory.getDefault()
+						.getNamespaceByName(getJGroupsNamespace()),
+				new Object[] { getServerIdentity() });
 	}
 
 	protected IContainer createServer() throws Exception {
-		return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] {getServerIdentity()});
+		return ContainerFactory.getDefault().createContainer(
+				getServerContainerName(), new Object[] { getServerIdentity() });
 	}
 
 	/**
 	 * @return
 	 */
-	protected IChannelListener getIChannelListener(final ID id) throws Exception {
+	protected IChannelListener getIChannelListener(final ID id)
+			throws Exception {
 		return new IChannelListener() {
 			public void handleChannelEvent(IChannelEvent event) {
 				if (event instanceof IChannelMessageEvent) {
-					//IChannelMessageEvent cme = (IChannelMessageEvent) event;
+					// IChannelMessageEvent cme = (IChannelMessageEvent) event;
 					messageEvents.put(id, event);
-					System.out.println(id + ".handleChannelEvent(" + event + ")");
+					System.out.println(id + ".handleChannelEvent(" + event
+							+ ")");
 				}
 			}
 		};

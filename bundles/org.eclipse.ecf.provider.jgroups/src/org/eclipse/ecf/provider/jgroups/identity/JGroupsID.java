@@ -76,8 +76,8 @@ public class JGroupsID extends BaseID {
 		this.uri = uri;
 		final String scheme = this.uri.getScheme();
 		if (scheme == null || !scheme.equalsIgnoreCase(ns.getScheme()))
-			throw new IDCreateException(NLS.bind("scheme must be {0}", ns
-					.getScheme()));
+			throw new IDCreateException(NLS.bind("scheme must be {0}",
+					ns.getScheme()));
 		;
 		final String path = getPathNoSlashes();
 		if (path == null || path.length() < 1)

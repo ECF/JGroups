@@ -41,8 +41,7 @@ public class JGroupsClientContainerInstantiator extends
 					.contains(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME)
 					|| supportedConfigs.contains(JGROUPS_CLIENT_NAME)) {
 				results.add(JGROUPS_CLIENT_NAME);
-				results
-						.add(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME);
+				results.add(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME);
 			}
 		}
 		if (results.size() == 0)

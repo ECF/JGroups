@@ -28,7 +28,8 @@ import org.osgi.framework.InvalidSyntaxException;
 /**
  * 
  */
-public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTestCase {
+public abstract class AbstractRemoteServiceTestCase extends
+		ContainerAbstractTestCase {
 
 	protected IRemoteServiceContainerAdapter[] adapters = null;
 
@@ -67,11 +68,15 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 	}
 
 	protected ID createServerID() throws Exception {
-		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(getJGroupsNamespace()), new Object[] {getServerIdentity()});
+		return IDFactory.getDefault().createID(
+				IDFactory.getDefault()
+						.getNamespaceByName(getJGroupsNamespace()),
+				new Object[] { getServerIdentity() });
 	}
 
 	protected IContainer createServer() throws Exception {
-		return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] {getServerIdentity()});
+		return ContainerFactory.getDefault().createContainer(
+				getServerContainerName(), new Object[] { getServerIdentity() });
 	}
 
 	protected void setClientCount(int count) {
@@ -84,7 +89,8 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 	protected void setupRemoteServiceAdapters() throws Exception {
 		final int clientCount = getClientCount();
 		for (int i = 0; i < clientCount; i++) {
-			adapters[i] = (IRemoteServiceContainerAdapter) getClients()[i].getAdapter(IRemoteServiceContainerAdapter.class);
+			adapters[i] = (IRemoteServiceContainerAdapter) getClients()[i]
+					.getAdapter(IRemoteServiceContainerAdapter.class);
 		}
 	}
 
@@ -106,13 +112,18 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 		}
 	}
 
-	protected IRemoteServiceRegistration registerService(IRemoteServiceContainerAdapter adapter, String serviceInterface, Object service, int sleepTime) {
-		final IRemoteServiceRegistration result = adapter.registerRemoteService(new String[] {serviceInterface}, service, null);
+	protected IRemoteServiceRegistration registerService(
+			IRemoteServiceContainerAdapter adapter, String serviceInterface,
+			Object service, int sleepTime) {
+		final IRemoteServiceRegistration result = adapter
+				.registerRemoteService(new String[] { serviceInterface },
+						service, null);
 		sleep(sleepTime);
 		return result;
 	}
 
-	protected IRemoteServiceReference[] getRemoteServiceReferences(IRemoteServiceContainerAdapter adapter, String clazz) {
+	protected IRemoteServiceReference[] getRemoteServiceReferences(
+			IRemoteServiceContainerAdapter adapter, String clazz) {
 		try {
 			return adapter.getRemoteServiceReferences((ID[]) null, clazz, null);
 		} catch (final InvalidSyntaxException e) {
@@ -121,19 +132,25 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 		return null;
 	}
 
-	protected IRemoteService getRemoteService(IRemoteServiceContainerAdapter adapter, String clazz) {
-		final IRemoteServiceReference[] refs = getRemoteServiceReferences(adapter, clazz);
+	protected IRemoteService getRemoteService(
+			IRemoteServiceContainerAdapter adapter, String clazz) {
+		final IRemoteServiceReference[] refs = getRemoteServiceReferences(
+				adapter, clazz);
 		if (refs.length == 0)
 			return null;
 		return adapter.getRemoteService(refs[0]);
 	}
 
-	protected IRemoteService registerAndGetRemoteService(IRemoteServiceContainerAdapter server, IRemoteServiceContainerAdapter client, String serviceName, int sleepTime) {
+	protected IRemoteService registerAndGetRemoteService(
+			IRemoteServiceContainerAdapter server,
+			IRemoteServiceContainerAdapter client, String serviceName,
+			int sleepTime) {
 		registerService(server, serviceName, createService(), sleepTime);
 		return getRemoteService(client, serviceName);
 	}
 
-	protected IRemoteCall createRemoteCall(final String method, final Object[] params) {
+	protected IRemoteCall createRemoteCall(final String method,
+			final Object[] params) {
 		return new IRemoteCall() {
 			public String getMethod() {
 				return method;

@@ -17,6 +17,5 @@ package org.eclipse.ecf.tests.provider.jgroups.remoteservice;
 public interface IConcatService {
 
 	public String concat(String string1, String string2);
-	
-	
+
 }

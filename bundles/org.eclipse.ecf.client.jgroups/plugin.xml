@@ -25,6 +25,7 @@
          </property>
       </product>
    </extension>
+   <!--
    <extension
          point="org.eclipse.ui.splashHandlers">
       <splashHandler
@@ -36,5 +37,5 @@
             splashId="org.eclipse.ecf.client.jgroups.splashHandlers.interactive">
       </splashHandlerProductBinding>
    </extension>
-
+-->
 </plugin>

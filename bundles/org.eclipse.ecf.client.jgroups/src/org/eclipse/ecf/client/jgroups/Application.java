@@ -18,9 +18,9 @@ public class Application implements IApplication {
 
 	protected static String CONTAINER_CLIENT = "ecf.jgroups.client";
 	protected static String CONTAINER_MANAGER = "ecf.jgroups.manager";
-	protected static String CONTAINER_DESCRIPTION="Trivial JGroups client";
-	protected static String CONTAINER_FACTORY="ecf.jgroups.client.containerFactory";
-	
+	protected static String CONTAINER_DESCRIPTION = "Trivial JGroups client";
+	protected static String CONTAINER_FACTORY = "ecf.jgroups.client.containerFactory";
+
 	@SuppressWarnings("unused")
 	private IApplicationContext context;
 
@@ -31,15 +31,16 @@ public class Application implements IApplication {
 	private static String jgURL;
 
 	protected IContainer createClient() throws Exception {
-		return ContainerFactory.getDefault().createContainer( 
+		return ContainerFactory.getDefault().createContainer(
 				new ContainerTypeDescription(CONTAINER_CLIENT,
 						JGroupsClientContainerInstantiator.class.getName(),
-						CONTAINER_DESCRIPTION), getServerIdentity() );
+						CONTAINER_DESCRIPTION), getServerIdentity());
 	}
 
-    private ID getServerIdentity() throws IDCreateException, URISyntaxException {
-    	return IDFactory.getDefault().createID("ecf.namespace.jgroupsid",jgURL);
-    }
+	private ID getServerIdentity() throws IDCreateException, URISyntaxException {
+		return IDFactory.getDefault()
+				.createID("ecf.namespace.jgroupsid", jgURL);
+	}
 
 	public Object start(IApplicationContext context) throws Exception {
 		final String[] args = mungeArguments((String[]) context.getArguments()
@@ -51,7 +52,7 @@ public class Application implements IApplication {
 			this.context = context;
 			jgURL = args[0];
 			System.out.println(jgURL);
-			ID managerID= getServerIdentity();
+			ID managerID = getServerIdentity();
 			System.out.println(managerID.toExternalForm());
 			synchronized (this) {
 				client = createClient();

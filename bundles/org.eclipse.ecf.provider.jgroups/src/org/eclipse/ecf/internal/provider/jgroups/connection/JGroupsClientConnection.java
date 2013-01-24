@@ -85,10 +85,9 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			throw new ContainerConnectException(except.getStatus());
 		} catch (final Exception e) {
 			throw new ContainerConnectException(
-					NLS
-							.bind(
-									Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED,
-									targetID.getName()), e);
+					NLS.bind(
+							Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED,
+							targetID.getName()), e);
 		}
 		if (result == null)
 			throw new ContainerConnectException(
@@ -189,8 +188,8 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 				Trace.exiting(Activator.PLUGIN_ID,
 						JGroupsDebugOptions.METHODS_EXITING, this.getClass(),
 						"internalHandleSynch");
-				return new DisconnectResponseMessage(dcm.getTargetID(), dcm
-						.getSenderID(), null);
+				return new DisconnectResponseMessage(dcm.getTargetID(),
+						dcm.getSenderID(), null);
 			}
 		} catch (final Exception e) {
 			Trace.catching(Activator.PLUGIN_ID,

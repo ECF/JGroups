@@ -27,15 +27,21 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		return JGroups.CLIENT_CONTAINER_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerContainerName()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#
+	 * getServerContainerName()
 	 */
 	protected String getServerContainerName() {
 		return JGroups.SERVER_CONTAINER_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerIdentity()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#
+	 * getServerIdentity()
 	 */
 	protected String getServerIdentity() {
 		return JGroups.TARGET_NAME;
@@ -52,7 +58,8 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		return new IConcatService() {
 			public String concat(String string1, String string2) {
 				final String result = string1.concat(string2);
-				System.out.println("SERVICE.concat(" + string1 + "," + string2 + ") returning " + result);
+				System.out.println("SERVICE.concat(" + string1 + "," + string2
+						+ ") returning " + result);
 				return string1.concat(string2);
 			}
 		};
@@ -61,7 +68,8 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	public void testRegisterService() throws Exception {
 		final IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
 		// adapter [0] is the service 'server'
-		final IRemoteServiceRegistration reg = registerService(adapters[0], IConcatService.class.getName(), createService(), 1500);
+		final IRemoteServiceRegistration reg = registerService(adapters[0],
+				IConcatService.class.getName(), createService(), 1500);
 		assertNotNull(reg);
 		assertNotNull(reg.getContainerID());
 	}
@@ -69,7 +77,8 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	public void testUnregisterService() throws Exception {
 		final IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
 		// adapter [0] is the service 'server'
-		final IRemoteServiceRegistration reg = registerService(adapters[0], IConcatService.class.getName(), createService(), 1500);
+		final IRemoteServiceRegistration reg = registerService(adapters[0],
+				IConcatService.class.getName(), createService(), 1500);
 		assertNotNull(reg);
 		assertNotNull(reg.getContainerID());
 
@@ -79,9 +88,11 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 
 	public void testGetServiceReference() throws Exception {
 		final IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
-		registerService(adapters[0], IConcatService.class.getName(), createService(), 4000);
+		registerService(adapters[0], IConcatService.class.getName(),
+				createService(), 4000);
 
-		final IRemoteServiceReference[] refs = getRemoteServiceReferences(adapters[1], IConcatService.class.getName());
+		final IRemoteServiceReference[] refs = getRemoteServiceReferences(
+				adapters[1], IConcatService.class.getName());
 
 		assertNotNull(refs);
 		assertTrue(refs.length >= 1);
@@ -94,12 +105,13 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	}
 
 	protected IRemoteCall createRemoteConcat(String first, String second) {
-		return createRemoteCall("concat", new Object[] {first, second});
+		return createRemoteCall("concat", new Object[] { first, second });
 	}
 
 	protected IRemoteService registerAndGetRemoteService() {
 		final IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
-		return registerAndGetRemoteService(adapters[0], adapters[1], IConcatService.class.getName(), 1500);
+		return registerAndGetRemoteService(adapters[0], adapters[1],
+				IConcatService.class.getName(), 1500);
 
 	}
 
@@ -115,7 +127,8 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		final IRemoteService service = registerAndGetRemoteService();
 
 		System.out.println("CLIENT.callSynch start");
-		final Object result = service.callSync(createRemoteConcat("JGroups ", "is cool"));
+		final Object result = service.callSync(createRemoteConcat("JGroups ",
+				"is cool"));
 		System.out.println("CLIENT.callSync end. result=" + result);
 		assertNotNull(result);
 		assertTrue(result.equals("JGroups ".concat("is cool")));
@@ -124,17 +137,21 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	public void testBadCallSynch() throws Exception {
 		final IRemoteService service = registerAndGetRemoteService();
 
-		// Following should throw exception because "concat1" method does not exist
+		// Following should throw exception because "concat1" method does not
+		// exist
 		try {
-			service.callSync(createRemoteCall("concat1", new Object[] {"first", "second"}));
+			service.callSync(createRemoteCall("concat1", new Object[] {
+					"first", "second" }));
 			fail();
 		} catch (final ECFException e) {
 			// Exception should occur
 		}
 
-		// Following should throw exception because wrong number of params for concat	
+		// Following should throw exception because wrong number of params for
+		// concat
 		try {
-			service.callSync(createRemoteCall("concat", new Object[] {"first"}));
+			service.callSync(createRemoteCall("concat",
+					new Object[] { "first" }));
 			fail();
 		} catch (final ECFException e) {
 			// Exception should occur
@@ -146,7 +163,8 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		final IRemoteService service = registerAndGetRemoteService();
 
 		System.out.println("CLIENT.callAsynch start");
-		service.callAsync(createRemoteConcat("JGroups ", "is cool"), createRemoteCallListener());
+		service.callAsync(createRemoteConcat("JGroups ", "is cool"),
+				createRemoteCallListener());
 		System.out.println("CLIENT.callAsynch end");
 		sleep(1500);
 	}

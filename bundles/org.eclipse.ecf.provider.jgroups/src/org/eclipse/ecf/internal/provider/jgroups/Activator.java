@@ -46,8 +46,10 @@ public class Activator implements BundleActivator {
 
 	private BundleContext context;
 
+	@SuppressWarnings("rawtypes")
 	private ServiceTracker logServiceTracker = null;
 
+	@SuppressWarnings("rawtypes")
 	private ServiceTracker extensionRegistryTracker = null;
 
 	/**
@@ -98,11 +100,12 @@ public class Activator implements BundleActivator {
 	public void log(IStatus status) {
 		final LogService logService = getLogService();
 		if (logService != null) {
-			logService.log(LogHelper.getLogCode(status), LogHelper
-					.getLogMessage(status), status.getException());
+			logService.log(LogHelper.getLogCode(status),
+					LogHelper.getLogMessage(status), status.getException());
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected LogService getLogService() {
 		if (logServiceTracker == null) {
 			logServiceTracker = new ServiceTracker(this.context,
@@ -112,6 +115,7 @@ public class Activator implements BundleActivator {
 		return (LogService) logServiceTracker.getService();
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private IExtensionRegistry getExtensionRegistry() {
 		if (extensionRegistryTracker == null) {
 			extensionRegistryTracker = new ServiceTracker(this.context,

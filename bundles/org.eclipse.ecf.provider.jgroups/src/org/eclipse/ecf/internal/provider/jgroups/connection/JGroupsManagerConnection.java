@@ -83,8 +83,8 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			// connect response and the other for everyone else
 			if (o instanceof ConnectRequestMessage) {
 				final ConnectResponseMessage crm = new ConnectResponseMessage(
-						(JGroupsID) getLocalID(), ((ConnectRequestMessage) o)
-								.getSenderID(), resp[0]);
+						(JGroupsID) getLocalID(),
+						((ConnectRequestMessage) o).getSenderID(), resp[0]);
 				sendAsynch(null, (byte[]) ((resp == null) ? null : resp[1]));
 				return crm;
 			} else if (o instanceof DisconnectRequestMessage) {
@@ -232,12 +232,10 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			oldView = view;
 			return;
 		} else {
-			final List departed = memberDiff(oldView.getMembers(), view
-					.getMembers());
+			final List departed = memberDiff(oldView.getMembers(),
+					view.getMembers());
 			if (departed.size() > 0) {
-				Trace
-						.trace(Activator.PLUGIN_ID, "members departed="
-								+ departed);
+				Trace.trace(Activator.PLUGIN_ID, "members departed=" + departed);
 				for (final Iterator i = departed.iterator(); i.hasNext();) {
 					final Address addr = (Address) i.next();
 					final Client client = getClientForAddress(addr);

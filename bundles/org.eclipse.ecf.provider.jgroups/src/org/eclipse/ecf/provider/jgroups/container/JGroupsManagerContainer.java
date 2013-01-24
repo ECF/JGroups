@@ -51,7 +51,8 @@ import org.osgi.service.event.EventHandler;
 /**
  *
  */
-public class JGroupsManagerContainer extends ServerSOContainer implements EventHandler {
+public class JGroupsManagerContainer extends ServerSOContainer implements
+		EventHandler {
 
 	public void handleEvent(Event event) {
 		System.out.println("event received from client: " + event.toString());
@@ -61,10 +62,10 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 
 			IContainerManager containerManager = (IContainerManager) getAdapter(IContainerManager.class);
 			IContainer container = containerManager.getContainer(getID());
-			
+
 			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
 					.getAdapter(ISharedObjectContainerGroupManager.class);
-			
+
 			cgm.ejectGroupMember(sender, "evict");
 		}
 	}
@@ -144,9 +145,8 @@ public class JGroupsManagerContainer extends ServerSOContainer implements EventH
 				JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 				method, e);
 		Activator.getDefault()
-				.log(
-						new Status(IStatus.ERROR, Activator.PLUGIN_ID, code,
-								method, e));
+				.log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, code,
+						method, e));
 	}
 
 	protected void handleConnectException(ContainerMessage mess,

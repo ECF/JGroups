@@ -110,9 +110,7 @@ public abstract class AbstractJGroupsConnection implements
 		}
 
 		public void channelReconnected(Address arg0) {
-			Trace
-					.trace(Activator.PLUGIN_ID, "channelReconnected(" + arg0
-							+ ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelReconnected(" + arg0 + ")");
 		}
 
 		public void channelShunned() {
@@ -281,8 +279,8 @@ public abstract class AbstractJGroupsConnection implements
 				}
 			} catch (final IOException e) {
 				Trace.catching(Activator.PLUGIN_ID,
-						JGroupsDebugOptions.EXCEPTIONS_CATCHING, this
-								.getClass(), "handleAsynch", e); //$NON-NLS-1$
+						JGroupsDebugOptions.EXCEPTIONS_CATCHING,
+						this.getClass(), "handleAsynch", e); //$NON-NLS-1$
 				Activator.getDefault().log(
 						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 								IStatus.ERROR, "Exception on handleAsynch", e)); //$NON-NLS-1$
@@ -325,7 +323,7 @@ public abstract class AbstractJGroupsConnection implements
 
 	protected String oldHost = null;
 	protected int oldPort = -1;
-	
+
 	protected void setPropertiesForStack(JGroupsID targetID) {
 		final String stackName = targetID.getStackName();
 		if (stackName == null)
@@ -333,8 +331,8 @@ public abstract class AbstractJGroupsConnection implements
 		if (stackName.equalsIgnoreCase(JGroupsID.DEFAULT_STACK_NAME)) {
 			if (targetID.getHost() != null) {
 				oldHost = System.getProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME);
-				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, targetID
-						.getHost());
+				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME,
+						targetID.getHost());
 				if (targetID.getPort() != -1) {
 					final String oPort = System
 							.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME);
@@ -390,9 +388,10 @@ public abstract class AbstractJGroupsConnection implements
 					ASYNCH_CHANNEL_NAME);
 			channel.addChannelListener(channelListener);
 			channel.setReceiver(receiver);
-			messageDispatcher = new MessageDispatcher(factory
-					.createMultiplexerChannel(stackName, SYNCH_CHANNEL_NAME),
-					null, null, messageDispatcherHandler);
+			messageDispatcher = new MessageDispatcher(
+					factory.createMultiplexerChannel(stackName,
+							SYNCH_CHANNEL_NAME), null, null,
+					messageDispatcherHandler);
 			channel.connect(targetID.getChannelName());
 			final ID localID = getLocalID();
 			// Set our identity address
@@ -445,6 +444,7 @@ public abstract class AbstractJGroupsConnection implements
 	public void stop() {
 		started = false;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 

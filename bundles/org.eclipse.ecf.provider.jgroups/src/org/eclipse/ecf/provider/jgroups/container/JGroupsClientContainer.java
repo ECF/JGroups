@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jgroups.container;
 
-import java.util.Properties;
+import java.util.Hashtable;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
@@ -37,7 +37,7 @@ public class JGroupsClientContainer extends ClientSOContainer implements
 		EventAdmin {
 
 	private final DistributedEventAdmin eventAdminImpl;
-	
+
 	public JGroupsClientContainer(SOContainerConfig config)
 			throws IDCreateException {
 		super(config);
@@ -47,10 +47,10 @@ public class JGroupsClientContainer extends ClientSOContainer implements
 		eventAdminImpl.start();
 
 		// register as EventAdmin service instance
-		Properties props0 = new Properties();
+		Hashtable<String, Object> props0 = new Hashtable<String, Object>();
 		props0.put(EventConstants.EVENT_TOPIC, "*");
-		context.registerService(
-				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
+		context.registerService("org.osgi.service.event.EventAdmin",
+				eventAdminImpl, props0);
 
 	}
 
