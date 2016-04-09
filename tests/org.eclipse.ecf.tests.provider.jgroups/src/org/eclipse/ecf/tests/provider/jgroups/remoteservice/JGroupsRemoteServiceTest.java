@@ -111,7 +111,7 @@ public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	protected IRemoteService registerAndGetRemoteService() {
 		final IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
 		return registerAndGetRemoteService(adapters[0], adapters[1],
-				IConcatService.class.getName(), 1500);
+				IConcatService.class.getName(), 2000);
 
 	}
 
