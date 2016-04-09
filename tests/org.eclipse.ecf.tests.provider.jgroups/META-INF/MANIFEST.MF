@@ -14,9 +14,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.datashare,
  org.eclipse.ecf.provider.jgroups;bundle-version="2.0.0"
 Eclipse-LazyStart: true
-Export-Package: org.eclipse.ecf.internal.tests.provider.jgroups;x-internal:=true,
- org.eclipse.ecf.tests.provider.jgroups.datashare,
- org.eclipse.ecf.tests.provider.jgroups.remoteservice
+Export-Package: org.eclipse.ecf.tests.provider.jgroups.remoteservice
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.equinox.concurrent.future;version="1.0.0"

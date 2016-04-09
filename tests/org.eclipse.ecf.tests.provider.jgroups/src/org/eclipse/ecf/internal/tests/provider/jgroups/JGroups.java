@@ -18,6 +18,6 @@ public interface JGroups {
 
 	public static final String CLIENT_CONTAINER_NAME = "ecf.jgroups.client";
 	public static final String SERVER_CONTAINER_NAME = "ecf.jgroups.manager";
-	public static final String TARGET_NAME = "jgroups:///testRemoteServiceGroup";
+	public static final String TARGET_NAME = "jgroups:testRemoteServiceGroup";
 	public static final String URI_CONFIG_NAME = "jgroups:///testConfig";
 }

@@ -10,7 +10,7 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.internal.provider.jgroups.JGroupsClientContainerInstantiator;
+import org.eclipse.ecf.provider.jgroups.container.JGroupsContainerInstantiator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -33,7 +33,7 @@ public class Application implements IApplication {
 	protected IContainer createClient() throws Exception {
 		return ContainerFactory.getDefault().createContainer(
 				new ContainerTypeDescription(CONTAINER_CLIENT,
-						JGroupsClientContainerInstantiator.class.getName(),
+						JGroupsContainerInstantiator.class.getName(),
 						CONTAINER_DESCRIPTION), getServerIdentity());
 	}
 

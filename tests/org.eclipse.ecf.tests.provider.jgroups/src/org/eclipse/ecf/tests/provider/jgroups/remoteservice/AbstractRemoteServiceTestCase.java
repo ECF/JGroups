@@ -136,7 +136,7 @@ public abstract class AbstractRemoteServiceTestCase extends
 			IRemoteServiceContainerAdapter adapter, String clazz) {
 		final IRemoteServiceReference[] refs = getRemoteServiceReferences(
 				adapter, clazz);
-		if (refs.length == 0)
+		if (refs == null || refs.length == 0)
 			return null;
 		return adapter.getRemoteService(refs[0]);
 	}

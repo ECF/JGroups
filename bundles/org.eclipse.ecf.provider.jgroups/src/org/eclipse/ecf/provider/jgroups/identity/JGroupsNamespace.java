@@ -21,7 +21,21 @@ public class JGroupsNamespace extends Namespace {
 	public static final String SCHEME = "jgroups";
 	public static final String NAME = "ecf.namespace.jgroupsid";
 
+	public static JGroupsNamespace INSTANCE;
+
 	public JGroupsNamespace() {
+		super(NAME, "JGroups namespace");
+		INSTANCE = this;
+	}
+
+	private JGroupsID createID(URI uri) throws IDCreateException {
+		String uriScheme = uri.getScheme();
+		if (uriScheme != null && !getScheme().equals(uriScheme))
+			throw new IDCreateException("scheme is not jgroups:");
+		else
+			uriScheme = getScheme();
+		URI idURI = URI.create(uriScheme + ":" + uri.getSchemeSpecificPart());
+		return new JGroupsID(this, idURI);
 	}
 
 	/*
@@ -34,19 +48,16 @@ public class JGroupsNamespace extends Namespace {
 	public ID createInstance(Object[] parameters) throws IDCreateException {
 		try {
 			if (parameters != null && parameters.length > 0) {
-				if (parameters[0] instanceof URI) {
-					return new JGroupsID(this, (URI) parameters[0]);
-				} else if (parameters[0] instanceof String) {
-					return new JGroupsID(this, new URI((String) parameters[0]));
-				}
+				if (parameters[0] instanceof URI)
+					return createID((URI) parameters[0]);
+				else if (parameters[0] instanceof String)
+					return createID(URI.create((String) parameters[0]));
 			}
-			throw new IDCreateException(
-					"JGroupsID cannot be created with given parameters");
+			throw new IDCreateException("JGroupsID cannot be created with given parameters");
 		} catch (final Exception e) {
 			if (e instanceof IDCreateException)
 				throw (IDCreateException) e;
-			throw new IDCreateException(NLS.bind(
-					"{0} createInstance()", getName()), e); //$NON-NLS-1$
+			throw new IDCreateException(NLS.bind("{0} createInstance()", getName()), e); //$NON-NLS-1$
 		}
 	}
 
@@ -65,7 +76,7 @@ public class JGroupsNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypes()
 	 */
 	public Class[][] getSupportedParameterTypes() {
-		return new Class[][] { { String.class }, {} };
+		return new Class[][] { { String.class, URI.class } };
 	}
 
 }
