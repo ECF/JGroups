@@ -88,7 +88,6 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 			ContainerCreateException cce = new ContainerCreateException("Exception creating jgroups manager container",
 					e);
 			cce.setStackTrace(e.getStackTrace());
-			;
 			throw cce;
 		}
 	}
