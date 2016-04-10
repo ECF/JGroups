@@ -55,6 +55,7 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			if (message instanceof ConnectRequestMessage)
 				sendMessage(message.getFromID(),
 						new ConnectResponseMessage(getLocalID(), message.getFromID(), (byte[]) resp[0]));
+			sendMessage(null, resp[1]);
 		} catch (final Exception e) {
 			logException("handleSyncMessage:exception", e);
 		}

@@ -41,6 +41,7 @@ import org.jgroups.View;
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
 	public static final int DEFAULT_BUFFER_SIZE = 4096;
+	public static final int DEFAULT_DISCONNECT_TIMEOUT = 3000;
 
 	private JChannel channel;
 	private boolean started = false;
@@ -48,6 +49,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	private List connectionListeners = new ArrayList();
 
 	private int bufferSize = DEFAULT_BUFFER_SIZE;
+	private int disconnectTimeout = DEFAULT_DISCONNECT_TIMEOUT;
 
 	protected ISynchAsynchEventHandler getEventHandler() {
 		return eventHandler;
@@ -59,6 +61,14 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	protected void setBufferSize(int bufferSize) {
 		this.bufferSize = bufferSize;
+	}
+
+	protected int getDisconnectTimeout() {
+		return this.disconnectTimeout;
+	}
+
+	protected void setDisconnectTimeout(int timeout) {
+		this.disconnectTimeout = timeout;
 	}
 
 	private final Receiver receiver = new ReceiverAdapter() {
@@ -170,7 +180,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			throw new IOException("invalid receiver id for disconnect request");
 		if (isActive())
 			result = sendMessageAndWait((JGroupsID) targetID,
-					new DisconnectRequestMessage((JGroupsID) receiver, getLocalID(), data), 3000);
+					new DisconnectRequestMessage((JGroupsID) receiver, getLocalID(), data), getDisconnectTimeout());
 		return result;
 	}
 
@@ -359,11 +369,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		started = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
 	public Object getAdapter(Class adapter) {
 		return null;
 	}

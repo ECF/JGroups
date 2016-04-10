@@ -1,6 +1,5 @@
 package org.eclipse.ecf.provider.jgroups.container;
 
-import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
@@ -20,11 +19,10 @@ import org.jgroups.JChannel;
 public class JGroupsContainerInstantiator extends RemoteServiceContainerInstantiator {
 
 	public static final String JGROUPS_ID_PROP = "id";
+	public static final String JGROUPS_CLIENTID_PROP = "clientId";
 	public static final String JGROUPS_MANAGER_ID_DEFAULT = "jgroups:exampleGroup";
 	public static final String JGROUPS_CHANNEL_CONFIG_URL = "channelConfigUrl";
 	public static final String JGROUPS_CHANNEL_CONFIG_STRING = "channelConfigString";
-	public static final String JGROUPS_CHANNEL_CONFIG_INPUTSTREAM = "channelConfigInputStream";
-	public static final String JGROUPS_CHANNEL_CONFIG_CHANNEL = "channelConfigChannel";
 
 	public JGroupsContainerInstantiator(String exporter, String[] importers) {
 		super();
@@ -65,7 +63,7 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 			return manager;
 		} else {
 			if (newID == null) {
-				String newIDString = getParameterValue(parameters, JGROUPS_ID_PROP, null);
+				String newIDString = getParameterValue(parameters, JGROUPS_CLIENTID_PROP, null);
 				if (newIDString == null)
 					newIDString = JGroupsNamespace.SCHEME + ":" + UUID.randomUUID().toString();
 				newID = (JGroupsID) JGroupsNamespace.INSTANCE.createInstance(new Object[] { newIDString });
@@ -74,7 +72,6 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 		}
 	}
 
-	@SuppressWarnings("resource")
 	@Override
 	public IContainer createInstance(ContainerTypeDescription description, Map<String, ?> parameters)
 			throws ContainerCreateException {
@@ -86,11 +83,6 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 			String configString = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_STRING, String.class, null);
 			if (configURL != null)
 				channel = new JChannel(configString);
-			InputStream configInputStream = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_INPUTSTREAM,
-					InputStream.class, null);
-			if (configInputStream != null)
-				channel = new JChannel(configInputStream);
-			channel = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_CHANNEL, JChannel.class, null);
 			return createJGroupsContainer(description, null, parameters, channel);
 		} catch (Exception e) {
 			ContainerCreateException cce = new ContainerCreateException("Exception creating jgroups manager container",
