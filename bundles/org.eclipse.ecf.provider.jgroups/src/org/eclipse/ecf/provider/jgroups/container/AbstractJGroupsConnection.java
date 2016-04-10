@@ -106,13 +106,13 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		this.channel = channel;
 	}
 
-	protected void sendMessage(Object data) throws IOException {
-		sendMessage(serializeToBytes(data));
+	protected void sendMessage(JGroupsID targetID, Object data) throws IOException {
+		sendMessage(targetID, serializeToBytes(data));
 	}
 
-	protected void sendMessage(byte[] data) throws IOException {
+	protected void sendMessage(JGroupsID targetID, byte[] data) throws IOException {
 		try {
-			getChannel().send(null, data);
+			getChannel().send(targetID == null ? null : targetID.getAddress(), data);
 		} catch (Exception e) {
 			IOException except = new IOException("Exception sending message");
 			except.setStackTrace(e.getStackTrace());
@@ -133,16 +133,12 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		if (targetID != null && !targetID.getNamespace().equals(JGroupsNamespace.INSTANCE))
 			throw new IOException("targetID=" + targetID.getName() + " is not in JGroupsNamespace");
 		try {
-			sendMessage(new AsyncMessage(getLocalID(), (JGroupsID) targetID, data));
+			sendMessage((JGroupsID) targetID, new AsyncMessage(getLocalID(), (JGroupsID) targetID, data));
 		} catch (final Exception e) {
-			throw new IOException(e.getLocalizedMessage());
+			IOException ioe = new IOException(e.getLocalizedMessage());
+			ioe.setStackTrace(e.getStackTrace());
+			throw ioe;
 		}
-	}
-
-	protected Message createMessage(JGroupsID dest, byte[] data) {
-		// return new Message((dest != null)?dest.toAddress():null,
-		// snd.toAddress(), data);
-		return new Message(dest == null ? null : dest.getAddress(), data);
 	}
 
 	private Object syncResponse;
@@ -168,20 +164,21 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return osu.serializeToBytes(obj);
 	}
 
-	public synchronized Object sendSynch(ID receiver, byte[] data) throws IOException {
+	public synchronized Object sendSynch(ID targetID, byte[] data) throws IOException {
 		Object result = null;
-		if (receiver == null || !(receiver instanceof JGroupsID))
+		if (targetID == null || !(targetID instanceof JGroupsID))
 			throw new IOException("invalid receiver id for disconnect request");
 		if (isActive())
-			result = sendMessageAndWait(new DisconnectRequestMessage((JGroupsID) receiver, getLocalID(), data), 3000);
+			result = sendMessageAndWait((JGroupsID) targetID,
+					new DisconnectRequestMessage((JGroupsID) receiver, getLocalID(), data), 3000);
 		return result;
 	}
 
-	protected Object sendMessageAndWait(Object data, int timeout) throws IOException {
+	protected Object sendMessageAndWait(JGroupsID targetID, Object data, int timeout) throws IOException {
 		long timeoutTime = System.currentTimeMillis() + timeout;
 		Object response = null;
 		synchronized (this) {
-			sendMessage(data);
+			sendMessage(targetID, data);
 			while (System.currentTimeMillis() < timeoutTime) {
 				response = getSyncResponse();
 				if (response != null)
@@ -304,6 +301,15 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		try {
 			if (channel == null)
 				channel = new JChannel();
+			else {
+				JChannel old = this.channel;
+				channel = new JChannel(old);
+				try {
+					old.close();
+				} catch (Exception e) {
+					logException("Exception closing prototype channel", e);
+				}
+			}
 			JGroupsID localID = getLocalID();
 			channel.setName(localID.getName());
 			channel.setReceiver(receiver);

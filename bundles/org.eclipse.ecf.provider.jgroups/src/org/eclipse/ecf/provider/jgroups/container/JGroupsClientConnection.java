@@ -44,7 +44,7 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		try {
 			final JGroupsID jgroupsID = (JGroupsID) targetID;
 			setupJGroups(jgroupsID);
-			response = (ConnectResponseMessage) sendMessageAndWait(
+			response = (ConnectResponseMessage) sendMessageAndWait(jgroupsID,
 					new ConnectRequestMessage(getLocalID(), jgroupsID, serializeToBytes(data)), timeout);
 		} catch (final Exception e) {
 			ContainerConnectException cce = new ContainerConnectException(
