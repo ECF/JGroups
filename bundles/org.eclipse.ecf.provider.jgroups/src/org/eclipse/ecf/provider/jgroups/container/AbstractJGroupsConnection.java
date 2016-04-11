@@ -304,15 +304,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		try {
 			if (channel == null)
 				channel = new JChannel();
-			else {
-				JChannel old = this.channel;
-				channel = new JChannel(old);
-				try {
-					old.close();
-				} catch (Exception e) {
-					logException("Exception closing prototype channel", e);
-				}
-			}
 			JGroupsID localID = getLocalID();
 			channel.setName(localID.getName());
 			channel.setReceiver(receiver);
