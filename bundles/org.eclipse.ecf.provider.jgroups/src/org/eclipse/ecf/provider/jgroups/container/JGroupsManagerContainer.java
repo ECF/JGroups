@@ -32,12 +32,19 @@ import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.ecf.remoteservice.util.ObjectSerializationUtil;
 import org.jgroups.JChannel;
 
 public class JGroupsManagerContainer extends ServerSOContainer {
 
 	public static final String JGROUPS_MANAGER_CONFIG = "ecf.jgroups.manager";
+	public static final String JGROUPS_MANAGERID_PROP = "managerId";
+	public static final String JGROUPS_MANAGER_ID_DEFAULT = JGroupsNamespace.INSTANCE.getScheme()
+			+ ":ecf.jgroups.defaultGroup";
+	public static final String JGROUPS_MANAGER_CHANNEL_CONFIG_URL = "managerChannelConfigUrl";
+	public static final String JGROUPS_MANAGER_CHANNEL_CONFIG_STRING = "managerChannelConfigString";
+	public static final String JGROUPS_MANAGER_CHANNEL_CONFIG_INPUTSTREAM = "managerChannelConfigInputStream";
 
 	private IConnectHandlerPolicy joinPolicy = null;
 	private ISynchAsynchConnection serverConnection;

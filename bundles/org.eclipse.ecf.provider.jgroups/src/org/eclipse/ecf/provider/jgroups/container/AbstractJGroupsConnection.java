@@ -124,7 +124,8 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	protected void sendMessage(JGroupsID targetID, byte[] data) throws IOException {
 		try {
-			Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_SEND_MESSAGE, getClass(), "sendMessage", "fromID="+getLocalID()+";targetID="+targetID+";<bytes>");
+			Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_SEND_MESSAGE, getClass(), "sendMessage",
+					"fromID=" + getLocalID() + ";targetID=" + targetID + ";<bytes>");
 			getChannel().send(targetID == null ? null : targetID.getAddress(), data);
 		} catch (Exception e) {
 			IOException except = new IOException("Exception sending message");
@@ -254,7 +255,8 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	}
 
 	protected void handleJGroupsReceive(final Message message) {
-		Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_RECEIVE_MESSAGE, getClass(), "handleJGroupsReceive", "msg="+message);
+		Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_RECEIVE_MESSAGE, getClass(),
+				"handleJGroupsReceive", "msg=" + message);
 		AbstractMessage o = null;
 		try {
 			o = (AbstractMessage) new ObjectSerializationUtil().deserializeFromBytes(message.getBuffer());

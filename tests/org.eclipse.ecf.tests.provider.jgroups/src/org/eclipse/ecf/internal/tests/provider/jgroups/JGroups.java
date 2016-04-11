@@ -11,13 +11,12 @@
 
 package org.eclipse.ecf.internal.tests.provider.jgroups;
 
-/**
- *
- */
+import org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer;
+import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
+
 public interface JGroups {
 
-	public static final String CLIENT_CONTAINER_NAME = "ecf.jgroups.client";
-	public static final String SERVER_CONTAINER_NAME = "ecf.jgroups.manager";
-	public static final String TARGET_NAME = "jgroups:testRemoteServiceGroup";
-	public static final String URI_CONFIG_NAME = "jgroups:///testConfig";
+	public static final String CLIENT_CONTAINER_NAME = JGroupsClientContainer.JGROUPS_CLIENT_CONFIG;
+	public static final String SERVER_CONTAINER_NAME = JGroupsManagerContainer.JGROUPS_MANAGER_CONFIG;
+	public static final String TARGET_NAME = JGroupsManagerContainer.JGROUPS_MANAGER_ID_DEFAULT;
 }

@@ -22,6 +22,11 @@ public class JGroupsClientContainer extends ClientSOContainer {
 
 	public static final String JGROUPS_CLIENT_CONFIG = "ecf.jgroups.client";
 
+	public static final String JGROUPS_CLIENTID_PROP = "clientId";
+	public static final String JGROUPS_CLIENT_CHANNEL_CONFIG_URL = "clientChannelConfigUrl";
+	public static final String JGROUPS_CLIENT_CHANNEL_CONFIG_STRING = "clientChannelConfigString";
+	public static final String JGROUPS_CLIENT_CHANNEL_CONFIG_INPUTSTREAM = "clientChannelConfigInputStream";
+
 	private final JChannel channel;
 
 	public JGroupsClientContainer(SOContainerConfig config) throws IDCreateException {

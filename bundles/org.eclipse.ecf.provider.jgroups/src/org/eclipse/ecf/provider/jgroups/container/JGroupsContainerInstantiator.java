@@ -1,5 +1,6 @@
 package org.eclipse.ecf.provider.jgroups.container;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.Map;
@@ -18,12 +19,6 @@ import org.jgroups.JChannel;
 
 public class JGroupsContainerInstantiator extends RemoteServiceContainerInstantiator {
 
-	public static final String JGROUPS_ID_PROP = "id";
-	public static final String JGROUPS_CLIENTID_PROP = "clientId";
-	public static final String JGROUPS_MANAGER_ID_DEFAULT = "jgroups:exampleGroup";
-	public static final String JGROUPS_CHANNEL_CONFIG_URL = "channelConfigUrl";
-	public static final String JGROUPS_CHANNEL_CONFIG_STRING = "channelConfigString";
-
 	public JGroupsContainerInstantiator(String exporter, String[] importers) {
 		super();
 		exporterConfigs.add(exporter);
@@ -35,15 +30,21 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 			throws ContainerCreateException {
 		try {
 			JGroupsID newID = null;
-			if (parameters != null && parameters.length > 0) {
-				if (parameters[0] instanceof JGroupsID)
-					newID = (JGroupsID) parameters[0];
-				else if (parameters[0] instanceof String)
-					newID = (JGroupsID) IDFactory.getDefault().createID(JGroupsNamespace.NAME, (String) parameters[0]);
+			JChannel channel = null;
+			if (parameters != null) {
+				for (int i = 0; i < parameters.length; i++) {
+					if (parameters[i] instanceof JGroupsID)
+						newID = (JGroupsID) parameters[i];
+					else if (parameters[i] instanceof String)
+						newID = (JGroupsID) IDFactory.getDefault().createID(JGroupsNamespace.NAME,
+								(String) parameters[i]);
+					else if (parameters[i] instanceof JChannel)
+						channel = (JChannel) parameters[i];
+				}
 			}
 			if (newID == null)
 				return super.createInstance(description, parameters);
-			return createJGroupsContainer(description, newID, null, null);
+			return createJGroupsContainer(newID, null, channel, description.isServer());
 		} catch (final Exception e) {
 			ContainerCreateException cce = new ContainerCreateException("Exception creating jgroups manager container",
 					e);
@@ -52,38 +53,51 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 		}
 	}
 
-	protected IContainer createJGroupsContainer(ContainerTypeDescription description, JGroupsID newID,
-			Map<String, ?> parameters, JChannel channel) throws ECFException {
-		if (description.isServer()) {
-			if (newID == null)
-				newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters, JGROUPS_ID_PROP,
-						JGROUPS_MANAGER_ID_DEFAULT);
+	protected IContainer createJGroupsContainer(JGroupsID newID, Map<String, ?> parameters, JChannel channel,
+			boolean server) throws ECFException {
+		if (server) {
+			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters,
+					JGroupsManagerContainer.JGROUPS_MANAGERID_PROP, JGroupsManagerContainer.JGROUPS_MANAGER_ID_DEFAULT);
 			JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOContainerConfig(newID), channel);
 			manager.start();
 			return manager;
 		} else {
-			if (newID == null) {
-				String newIDString = getParameterValue(parameters, JGROUPS_CLIENTID_PROP, null);
-				if (newIDString == null)
-					newIDString = JGroupsNamespace.SCHEME + ":" + UUID.randomUUID().toString();
-				newID = (JGroupsID) JGroupsNamespace.INSTANCE.createInstance(new Object[] { newIDString });
-			}
+			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters,
+					JGroupsClientContainer.JGROUPS_CLIENTID_PROP,
+					JGroupsNamespace.SCHEME + ":" + UUID.randomUUID().toString());
 			return new JGroupsClientContainer(new SOContainerConfig(newID), channel);
 		}
+	}
+
+	protected JChannel getChannelFromParameters(Map<String, ?> parameters, boolean server) throws Exception {
+		URL configURL = getParameterValue(parameters,
+				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_URL
+						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_URL,
+				URL.class, null);
+		if (configURL != null)
+			return new JChannel(configURL);
+		String configString = getParameterValue(parameters,
+				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_STRING
+						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_STRING,
+				String.class, null);
+		if (configString != null)
+			return new JChannel(configString);
+		InputStream ins = getParameterValue(parameters,
+				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_INPUTSTREAM
+						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_INPUTSTREAM,
+				InputStream.class, null);
+		if (ins != null)
+			return new JChannel(ins);
+		return null;
 	}
 
 	@Override
 	public IContainer createInstance(ContainerTypeDescription description, Map<String, ?> parameters)
 			throws ContainerCreateException {
+		boolean server = description.isServer();
 		try {
-			JChannel channel = null;
-			URL configURL = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_URL, URL.class, null);
-			if (configURL != null)
-				channel = new JChannel(configURL);
-			String configString = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_STRING, String.class, null);
-			if (configURL != null)
-				channel = new JChannel(configString);
-			return createJGroupsContainer(description, null, parameters, channel);
+			return createJGroupsContainer(null, parameters, getChannelFromParameters(parameters, server),
+					description.isServer());
 		} catch (Exception e) {
 			ContainerCreateException cce = new ContainerCreateException("Exception creating jgroups manager container",
 					e);
