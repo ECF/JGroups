@@ -493,26 +493,6 @@ Ty Coon, President of Vice
 That&apos;s all there is to it!
    </license>
 
-   <requires>
-      <import plugin="org.eclipse.equinox.common"/>
-      <import plugin="org.eclipse.ecf"/>
-      <import plugin="org.eclipse.ecf.sharedobject"/>
-      <import plugin="org.eclipse.ecf.provider"/>
-      <import plugin="org.eclipse.ecf.datashare"/>
-      <import plugin="org.eclipse.ecf.remoteservice"/>
-      <import plugin="org.eclipse.ecf.provider.datashare"/>
-      <import plugin="org.eclipse.ecf.provider.remoteservice"/>
-      <import plugin="org.eclipse.equinox.registry"/>
-      <import plugin="org.eclipse.equinox.app"/>
-      <import plugin="org.eclipse.osgi"/>
-      <import plugin="org.eclipse.osgi.services"/>
-      <import plugin="org.eclipse.ui"/>
-      <import plugin="org.eclipse.core.runtime"/>
-      <import plugin="org.eclipse.ecf.ui"/>
-      <import plugin="org.eclipse.ecf.example.collab"/>
-      <import plugin="org.eclipse.core.resources"/>
-   </requires>
-
    <plugin
          id="org.eclipse.ecf.provider.jgroups"
          download-size="0"
@@ -521,7 +501,7 @@ That&apos;s all there is to it!
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ecf.server.jgroups"
+         id="org.jgroups"
          download-size="0"
          install-size="0"
          version="0.0.0"
