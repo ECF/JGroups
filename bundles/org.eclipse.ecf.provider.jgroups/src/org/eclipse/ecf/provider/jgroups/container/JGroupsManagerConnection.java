@@ -52,10 +52,12 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 					.handleSynchEvent(new SynchEvent(this, message));
 			// this resp is an Serializable[] with two messages, one for the
 			// connect response and the other for everyone else
-			if (message instanceof ConnectRequestMessage)
+			if (message instanceof ConnectRequestMessage) {
+				JGroupsID fromID = getLocalID();
 				sendMessage(message.getFromID(),
-						new ConnectResponseMessage(getLocalID(), message.getFromID(), (byte[]) resp[0]));
-			sendMessage(null, resp[1]);
+						new ConnectResponseMessage(fromID, message.getFromID(), (byte[]) resp[0]));
+				sendMessage(null, new AsyncMessage(fromID, null, (byte[]) resp[1]));
+			}
 		} catch (final Exception e) {
 			logException("handleSyncMessage:exception", e);
 		}

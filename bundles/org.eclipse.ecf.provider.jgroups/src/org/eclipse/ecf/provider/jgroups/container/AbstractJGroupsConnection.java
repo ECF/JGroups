@@ -19,7 +19,9 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
+import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
 import org.eclipse.ecf.provider.comm.AsynchEvent;
 import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
@@ -122,6 +124,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	protected void sendMessage(JGroupsID targetID, byte[] data) throws IOException {
 		try {
+			Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_SEND_MESSAGE, getClass(), "sendMessage", "fromID="+getLocalID()+";targetID="+targetID+";<bytes>");
 			getChannel().send(targetID == null ? null : targetID.getAddress(), data);
 		} catch (Exception e) {
 			IOException except = new IOException("Exception sending message");
@@ -251,15 +254,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	}
 
 	protected void handleJGroupsReceive(final Message message) {
-		if (message == null) {
-			logMessageError("handleJGroupsReceive:message is null", message);
-			return;
-		}
-		final Address src = message.getSrc();
-		if (src == null) {
-			logMessageError("handleJGroupsReceive:src address is not valid", message);
-			return;
-		}
+		Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_RECEIVE_MESSAGE, getClass(), "handleJGroupsReceive", "msg="+message);
 		AbstractMessage o = null;
 		try {
 			o = (AbstractMessage) new ObjectSerializationUtil().deserializeFromBytes(message.getBuffer());
@@ -279,21 +274,17 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		JGroupsID localID = getLocalID();
 		JGroupsID targetID = o.getTargetID();
 		// Handle SyncMessages
-		if (o instanceof SyncMessage) {
-			SyncMessage sm = (SyncMessage) o;
-			if (localID.equals(targetID) && !fromID.equals(localID))
-				handleSyncMessage(sm);
+		if (o instanceof SyncMessage && localID.equals(targetID) && !fromID.equals(localID)) {
+			handleSyncMessage((SyncMessage) o);
 			return;
 		}
 		// Handle AsyncMessages
-		if (o instanceof AsyncMessage) {
-			final AsyncMessage msg = (AsyncMessage) o;
-			if (!localID.equals(fromID) && (targetID == null || getLocalID().equals(targetID)))
-				try {
-					eventHandler.handleAsynchEvent(new AsynchEvent(this, msg.getData()));
-				} catch (final IOException e) {
-					logMessageError("handleJGroupsReceive", message, e);
-				}
+		if (o instanceof AsyncMessage && !localID.equals(fromID) && (targetID == null || localID.equals(targetID))) {
+			try {
+				eventHandler.handleAsynchEvent(new AsynchEvent(this, o.getData()));
+			} catch (final IOException e) {
+				logMessageError("handleJGroupsReceive", message, e);
+			}
 		}
 	}
 

@@ -14,3 +14,7 @@ org.eclipse.ecf.provider.jgroups/debug/exceptions/throwing=false
 org.eclipse.ecf.provider.jgroups/debug/methods/entering=false
 # Trace when methods are exited
 org.eclipse.ecf.provider.jgroups/debug/methods/exiting=false
+
+org.eclipse.ecf.provider.jgroups/handleReceiveMessage=false
+org.eclipse.ecf.provider.jgroups/sendMessage=false
+
