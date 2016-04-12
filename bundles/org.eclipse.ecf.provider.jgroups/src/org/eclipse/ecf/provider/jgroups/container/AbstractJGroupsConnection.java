@@ -10,6 +10,8 @@ package org.eclipse.ecf.provider.jgroups.container;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -19,11 +21,10 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
-import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
 import org.eclipse.ecf.provider.comm.AsynchEvent;
-import org.eclipse.ecf.provider.comm.ConnectionEvent;
+import org.eclipse.ecf.provider.comm.DisconnectEvent;
+import org.eclipse.ecf.provider.comm.IAsynchConnection;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
@@ -48,8 +49,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	private JChannel channel;
 	private boolean started = false;
 	private final ISynchAsynchEventHandler eventHandler;
-	private List connectionListeners = new ArrayList();
-
 	private int bufferSize = DEFAULT_BUFFER_SIZE;
 	private int disconnectTimeout = DEFAULT_DISCONNECT_TIMEOUT;
 
@@ -85,33 +84,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 	};
 
-	protected void fireListenersConnect(ConnectionEvent event) {
-		List toNotify = null;
-		synchronized (connectionListeners) {
-			toNotify = new ArrayList(connectionListeners);
-		}
-		for (final Iterator i = toNotify.iterator(); i.hasNext();) {
-			final IConnectionListener l = (IConnectionListener) i.next();
-			l.handleConnectEvent(event);
-		}
-	}
-
-	/**
-	 * @param view
-	 */
-	protected abstract void handleViewAccepted(View view);
-
-	protected void fireListenersDisconnect(ConnectionEvent event) {
-		List toNotify = null;
-		synchronized (connectionListeners) {
-			toNotify = new ArrayList(connectionListeners);
-		}
-		for (final Iterator i = toNotify.iterator(); i.hasNext();) {
-			final IConnectionListener l = (IConnectionListener) i.next();
-			l.handleConnectEvent(event);
-		}
-	}
-
 	public AbstractJGroupsConnection(ISynchAsynchEventHandler eventHandler, JChannel channel) {
 		Assert.isNotNull(eventHandler);
 		this.eventHandler = eventHandler;
@@ -124,8 +96,10 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	protected void sendMessage(JGroupsID targetID, byte[] data) throws IOException {
 		try {
-			Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_SEND_MESSAGE, getClass(), "sendMessage",
-					"fromID=" + getLocalID() + ";targetID=" + targetID + ";<bytes>");
+			// Trace.trace(Activator.PLUGIN_ID,
+			// JGroupsDebugOptions.JGROUPS_SEND_MESSAGE, getClass(),
+			// "sendMessage",
+			// "fromID=" + getLocalID() + ";targetID=" + targetID + ";<bytes>");
 			getChannel().send(targetID == null ? null : targetID.getAddress(), data);
 		} catch (Exception e) {
 			IOException except = new IOException("Exception sending message");
@@ -209,26 +183,10 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return response;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ecf.core.comm.IConnection#addCommEventListener(org.eclipse
-	 * .ecf.core.comm.IConnectionListener)
-	 */
 	public void addListener(IConnectionListener listener) {
-		connectionListeners.add(listener);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ecf.core.comm.IConnection#removeCommEventListener(org.eclipse
-	 * .ecf.core.comm.IConnectionListener)
-	 */
 	public void removeListener(IConnectionListener listener) {
-		connectionListeners.remove(listener);
 	}
 
 	/*
@@ -255,8 +213,9 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	}
 
 	protected void handleJGroupsReceive(final Message message) {
-		Trace.trace(Activator.PLUGIN_ID, JGroupsDebugOptions.JGROUPS_RECEIVE_MESSAGE, getClass(),
-				"handleJGroupsReceive", "msg=" + message);
+		// Trace.trace(Activator.PLUGIN_ID,
+		// JGroupsDebugOptions.JGROUPS_RECEIVE_MESSAGE, getClass(),
+		// "handleJGroupsReceive", "msg=" + message);
 		AbstractMessage o = null;
 		try {
 			o = (AbstractMessage) new ObjectSerializationUtil().deserializeFromBytes(message.getBuffer());
@@ -279,6 +238,13 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		if (o instanceof SyncMessage && localID.equals(targetID) && !fromID.equals(localID)) {
 			handleSyncMessage((SyncMessage) o);
 			return;
+		}
+		synchronized (this) {
+			// If not started, we can't handle any other messages
+			if (!isStarted()) {
+				logMessageError("handleJGroupsReceive: connection not yet started", message);
+				return;
+			}
 		}
 		// Handle AsyncMessages
 		if (o instanceof AsyncMessage && !localID.equals(fromID) && (targetID == null || localID.equals(targetID))) {
@@ -355,6 +321,61 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	public Object getAdapter(Class adapter) {
 		return null;
+	}
+
+	private View oldView = null;
+
+	private List<Address> memberDiff(List<Address> oldMembers, List<Address> newMembers) {
+		final List<Address> result = new ArrayList<Address>();
+		for (final Iterator<Address> i = oldMembers.iterator(); i.hasNext();) {
+			final Address addr1 = i.next();
+			if (!newMembers.contains(addr1))
+				result.add(addr1);
+		}
+		return result;
+	}
+
+	protected void handleViewAccepted(View view) {
+		if (oldView == null) {
+			oldView = view;
+			return;
+		} else {
+			final List departed = memberDiff(oldView.getMembers(), view.getMembers());
+			if (departed.size() > 0) {
+				for (final Iterator i = departed.iterator(); i.hasNext();) {
+					final Address addr = (Address) i.next();
+					final IAsynchConnection client = getClientForAddress(addr);
+					if (client != null)
+						handleDisconnectInThread(client);
+				}
+			}
+			oldView = view;
+		}
+	}
+
+	private void handleDisconnectInThread(final IAsynchConnection client) {
+		final Thread t = new Thread(new Runnable() {
+			public void run() {
+				AbstractJGroupsConnection.this.getEventHandler().handleDisconnectEvent(new DisconnectEvent(client,
+						new Exception("client=" + client.getLocalID() + " disconnected"), null));
+			}
+		});
+		t.start();
+	}
+
+	private final Map<Address, IAsynchConnection> addressClientMap = Collections
+			.synchronizedMap(new HashMap<Address, IAsynchConnection>());
+
+	protected void addClientToMap(Address address, IAsynchConnection client) {
+		addressClientMap.put(address, client);
+	}
+
+	protected void removeClientFromMap(Address addr) {
+		addressClientMap.remove(addr);
+	}
+
+	protected IAsynchConnection getClientForAddress(Address addr) {
+		return addressClientMap.get(addr);
 	}
 
 }

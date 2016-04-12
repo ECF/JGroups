@@ -65,12 +65,10 @@ public class Activator implements BundleActivator {
 		// register namespace
 		this.context.registerService(Namespace.class, new JGroupsNamespace(), null);
 		// Register JGroups Manager
+		JGroupsContainerInstantiator instantiator = new JGroupsContainerInstantiator();
 		context.registerService(IRemoteServiceDistributionProvider.class,
 				new RemoteServiceDistributionProvider.Builder().setName(JGROUPS_MANAGER_CONFIG)
-						.setInstantiator(
-								new JGroupsContainerInstantiator(JGroupsManagerContainer.JGROUPS_MANAGER_CONFIG,
-										new String[] { JGroupsClientContainer.JGROUPS_CLIENT_CONFIG }))
-						.setDescription("ECF JGroups Manager").setServer(true)
+						.setInstantiator(instantiator).setDescription("ECF JGroups Manager").setServer(true)
 						.setAdapterConfig(new AdapterConfig(new RemoteServiceContainerAdapterFactory(),
 								JGroupsManagerContainer.class))
 						.build(),
@@ -78,10 +76,7 @@ public class Activator implements BundleActivator {
 		// same with client
 		context.registerService(IRemoteServiceDistributionProvider.class,
 				new RemoteServiceDistributionProvider.Builder().setName("ecf.jgroups.client")
-						.setInstantiator(new JGroupsContainerInstantiator(JGroupsClientContainer.JGROUPS_CLIENT_CONFIG,
-								new String[] { JGroupsClientContainer.JGROUPS_CLIENT_CONFIG,
-										JGroupsManagerContainer.JGROUPS_MANAGER_CONFIG }))
-						.setDescription("ECF JGroups Client").setServer(false)
+						.setInstantiator(instantiator).setDescription("ECF JGroups Client").setServer(false)
 						.setAdapterConfig(new AdapterConfig(new RemoteServiceContainerAdapterFactory(),
 								JGroupsClientContainer.class))
 						.build(),

@@ -11,12 +11,11 @@
 
 package org.eclipse.ecf.internal.tests.provider.jgroups;
 
-import org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer;
-import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
+import org.eclipse.ecf.provider.jgroups.container.JGroupsContainerInstantiator;
 
 public interface JGroups {
 
-	public static final String CLIENT_CONTAINER_NAME = JGroupsClientContainer.JGROUPS_CLIENT_CONFIG;
-	public static final String SERVER_CONTAINER_NAME = JGroupsManagerContainer.JGROUPS_MANAGER_CONFIG;
-	public static final String TARGET_NAME = JGroupsManagerContainer.JGROUPS_MANAGER_ID_DEFAULT;
+	public static final String CLIENT_CONTAINER_NAME = JGroupsContainerInstantiator.JGROUPS_CLIENT_CONFIG;
+	public static final String SERVER_CONTAINER_NAME = JGroupsContainerInstantiator.JGROUPS_MANAGER_CONFIG;
+	public static final String TARGET_NAME = JGroupsContainerInstantiator.JGROUPS_MANAGER_ID_DEFAULT;
 }

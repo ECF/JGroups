@@ -19,10 +19,25 @@ import org.jgroups.JChannel;
 
 public class JGroupsContainerInstantiator extends RemoteServiceContainerInstantiator {
 
-	public JGroupsContainerInstantiator(String exporter, String[] importers) {
+	public static final String JGROUPS_MANAGER_CONFIG = "ecf.jgroups.manager";
+	public static final String JGROUPS_CLIENT_CONFIG = "ecf.jgroups.client";
+
+	public static final String JGROUPS_ID_PROP = "id";
+	public static final String JGROUPS_MANAGER_ID_DEFAULT = JGroupsNamespace.INSTANCE.getScheme()
+			+ ":ecf.jgroups.defaultGroup";
+	public static final String JGROUPS_CHANNEL_CONFIG_URL = "channelConfigUrl";
+	public static final String JGROUPS_CHANNEL_CONFIG_STRING = "channelConfigString";
+	public static final String JGROUPS_CHANNEL_CONFIG_INPUTSTREAM = "channelConfigInputStream";
+	public static final String JGROUPS_CHANNEL_CONFIG_CHANNEL = "channelJChannel";
+
+	public JGroupsContainerInstantiator() {
 		super();
-		exporterConfigs.add(exporter);
-		exporterConfigToImporterConfigs.put(exporter, Arrays.asList(importers));
+		exporterConfigs.add(JGROUPS_MANAGER_CONFIG);
+		exporterConfigs.add(JGROUPS_CLIENT_CONFIG);
+		exporterConfigToImporterConfigs.put(JGROUPS_MANAGER_CONFIG,
+				Arrays.asList(new String[] { JGROUPS_CLIENT_CONFIG }));
+		exporterConfigToImporterConfigs.put(JGROUPS_CLIENT_CONFIG,
+				Arrays.asList(new String[] { JGROUPS_CLIENT_CONFIG, JGROUPS_MANAGER_CONFIG }));
 	}
 
 	@Override
@@ -56,38 +71,32 @@ public class JGroupsContainerInstantiator extends RemoteServiceContainerInstanti
 	protected IContainer createJGroupsContainer(JGroupsID newID, Map<String, ?> parameters, JChannel channel,
 			boolean server) throws ECFException {
 		if (server) {
-			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters,
-					JGroupsManagerContainer.JGROUPS_MANAGERID_PROP, JGroupsManagerContainer.JGROUPS_MANAGER_ID_DEFAULT);
+			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters, JGROUPS_ID_PROP,
+					JGROUPS_MANAGER_ID_DEFAULT);
 			JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOContainerConfig(newID), channel);
 			manager.start();
 			return manager;
 		} else {
-			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters,
-					JGroupsClientContainer.JGROUPS_CLIENTID_PROP,
+			newID = (JGroupsID) getIDParameterValue(JGroupsNamespace.INSTANCE, parameters, JGROUPS_ID_PROP,
 					JGroupsNamespace.SCHEME + ":" + UUID.randomUUID().toString());
 			return new JGroupsClientContainer(new SOContainerConfig(newID), channel);
 		}
 	}
 
 	protected JChannel getChannelFromParameters(Map<String, ?> parameters, boolean server) throws Exception {
-		URL configURL = getParameterValue(parameters,
-				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_URL
-						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_URL,
+		URL configURL = getParameterValue(parameters, JGroupsContainerInstantiator.JGROUPS_CHANNEL_CONFIG_URL,
 				URL.class, null);
 		if (configURL != null)
 			return new JChannel(configURL);
-		String configString = getParameterValue(parameters,
-				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_STRING
-						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_STRING,
-				String.class, null);
+		String configString = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_STRING, String.class, null);
 		if (configString != null)
 			return new JChannel(configString);
-		InputStream ins = getParameterValue(parameters,
-				server ? JGroupsManagerContainer.JGROUPS_MANAGER_CHANNEL_CONFIG_INPUTSTREAM
-						: JGroupsClientContainer.JGROUPS_CLIENT_CHANNEL_CONFIG_INPUTSTREAM,
-				InputStream.class, null);
+		InputStream ins = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_INPUTSTREAM, InputStream.class, null);
 		if (ins != null)
 			return new JChannel(ins);
+		JChannel jChannel = getParameterValue(parameters, JGROUPS_CHANNEL_CONFIG_CHANNEL, JChannel.class, null);
+		if (jChannel != null)
+			return jChannel;
 		return null;
 	}
 

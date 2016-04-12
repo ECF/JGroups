@@ -21,6 +21,6 @@ public interface JGroupsDebugOptions {
 	public static final String METHODS_EXITING = DEBUG + "/methods/exiting"; //$NON-NLS-1$
 
 	public static final String JGROUPS_RECEIVE_MESSAGE = DEBUG + "/handleReceiveMessage";
-	
+
 	public static final String JGROUPS_SEND_MESSAGE = DEBUG + "/sendMessage";
 }

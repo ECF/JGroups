@@ -10,11 +10,6 @@ package org.eclipse.ecf.provider.jgroups.container;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -25,9 +20,7 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.jgroups.Address;
 import org.jgroups.JChannel;
-import org.jgroups.View;
 
 /**
  *
@@ -140,65 +133,6 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 				Client.this.notifyAll();
 			}
 		}
-	}
-
-	private View oldView = null;
-
-	private List<Address> memberDiff(List<Address> oldMembers, List<Address> newMembers) {
-		final List<Address> result = new ArrayList<Address>();
-		for (final Iterator<Address> i = oldMembers.iterator(); i.hasNext();) {
-			final Address addr1 = i.next();
-			if (!newMembers.contains(addr1))
-				result.add(addr1);
-		}
-		return result;
-	}
-
-	@Override
-	protected void handleViewAccepted(View view) {
-		if (oldView == null) {
-			oldView = view;
-			return;
-		} else {
-			final List departed = memberDiff(oldView.getMembers(), view.getMembers());
-			if (departed.size() > 0) {
-				for (final Iterator i = departed.iterator(); i.hasNext();) {
-					final Address addr = (Address) i.next();
-					final Client client = getClientForAddress(addr);
-					if (client != null)
-						handleDisconnectInThread(client);
-				}
-			}
-			oldView = view;
-		}
-	}
-
-	private void handleDisconnectInThread(final Client client) {
-		final Thread t = new Thread(new Runnable() {
-			public void run() {
-				JGroupsManagerConnection.this.getEventHandler().handleDisconnectEvent(new DisconnectEvent(client,
-						new Exception("client=" + client.clientID + " disconnected"), null));
-			}
-		});
-		t.start();
-	}
-
-	private final Map<Address, Client> addressClientMap = Collections.synchronizedMap(new HashMap<Address, Client>());
-
-	private void addClientToMap(Address address, Client client) {
-		addressClientMap.put(address, client);
-	}
-
-	private void removeClientFromMap(Address addr) {
-		addressClientMap.remove(addr);
-	}
-
-	/**
-	 * @param addr
-	 * @return
-	 */
-	private Client getClientForAddress(Address addr) {
-		return addressClientMap.get(addr);
 	}
 
 }
