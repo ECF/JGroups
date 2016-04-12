@@ -10,16 +10,20 @@ package org.eclipse.ecf.provider.jgroups.container;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.DisconnectEvent;
+import org.eclipse.ecf.provider.comm.IAsynchConnection;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.jgroups.Address;
 import org.jgroups.JChannel;
 
 /**
@@ -134,5 +138,21 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			}
 		}
 	}
+
+	private final Map<Address, IAsynchConnection> addressClientMap = Collections
+			.synchronizedMap(new HashMap<Address, IAsynchConnection>());
+
+	protected void addClientToMap(Address address, IAsynchConnection client) {
+		addressClientMap.put(address, client);
+	}
+
+	protected void removeClientFromMap(Address addr) {
+		addressClientMap.remove(addr);
+	}
+
+	protected IAsynchConnection getClientForAddress(Address addr) {
+		return addressClientMap.get(addr);
+	}
+
 
 }

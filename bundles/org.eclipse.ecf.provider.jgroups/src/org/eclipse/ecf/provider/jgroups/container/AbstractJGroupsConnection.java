@@ -10,8 +10,6 @@ package org.eclipse.ecf.provider.jgroups.container;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
@@ -345,37 +343,20 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 				for (final Iterator i = departed.iterator(); i.hasNext();) {
 					final Address addr = (Address) i.next();
 					final IAsynchConnection client = getClientForAddress(addr);
-					if (client != null)
-						handleDisconnectInThread(client);
+					if (client != null) {
+						new Thread(new Runnable() {
+							public void run() {
+								AbstractJGroupsConnection.this.getEventHandler().handleDisconnectEvent(new DisconnectEvent(client,
+										new Exception("client=" + client.getLocalID() + " disconnected"), null));
+							}
+						}).start();
+					}
 				}
 			}
 			oldView = view;
 		}
 	}
 
-	private void handleDisconnectInThread(final IAsynchConnection client) {
-		final Thread t = new Thread(new Runnable() {
-			public void run() {
-				AbstractJGroupsConnection.this.getEventHandler().handleDisconnectEvent(new DisconnectEvent(client,
-						new Exception("client=" + client.getLocalID() + " disconnected"), null));
-			}
-		});
-		t.start();
-	}
-
-	private final Map<Address, IAsynchConnection> addressClientMap = Collections
-			.synchronizedMap(new HashMap<Address, IAsynchConnection>());
-
-	protected void addClientToMap(Address address, IAsynchConnection client) {
-		addressClientMap.put(address, client);
-	}
-
-	protected void removeClientFromMap(Address addr) {
-		addressClientMap.remove(addr);
-	}
-
-	protected IAsynchConnection getClientForAddress(Address addr) {
-		return addressClientMap.get(addr);
-	}
-
+	protected abstract IAsynchConnection getClientForAddress(Address addr);
+	
 }
