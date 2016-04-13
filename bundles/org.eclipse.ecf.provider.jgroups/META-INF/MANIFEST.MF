@@ -38,4 +38,5 @@ Export-Package: org.eclipse.ecf.provider.jgroups.container,
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Dynamic-ImportPackage: *
+Provide-Capability: osgi.remoteserviceadmin.distribution; configs:List<String>="ecf.jgroups.manager,ecf.jgroups.client"; version:Version=1.1 
 
