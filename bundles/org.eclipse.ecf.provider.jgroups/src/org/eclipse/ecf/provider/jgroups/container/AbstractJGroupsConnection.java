@@ -31,12 +31,10 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.ecf.remoteservice.util.ObjectSerializationUtil;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
-import org.jgroups.Channel;
 import org.jgroups.JChannel;
 import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.ReceiverAdapter;
-import org.jgroups.TimeoutException;
 import org.jgroups.View;
 
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
@@ -172,11 +170,13 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 				try {
 					wait(timeout / 10);
 				} catch (InterruptedException e) {
-					throw new IOException("sendMessageAndWait timed out timeout=" + timeout);
+					IOException except = new IOException("sendMessageAndWait interrupted=" + timeout);
+					except.setStackTrace(e.getStackTrace());
+					throw except;
 				}
 			}
-			if (response == null)
-				throw new TimeoutException("Timed out sending");
+			if (response == null) 
+				throw new IOException("sendMessageAndWait timed out="+ timeout);
 		}
 		return response;
 	}
@@ -260,7 +260,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return channel.getAddress();
 	}
 
-	protected Channel getChannel() {
+	protected JChannel getChannel() {
 		return channel;
 	}
 
