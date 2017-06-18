@@ -29,7 +29,6 @@ import org.jgroups.JChannel;
 /**
  *
  */
-@SuppressWarnings("unchecked")
 public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler, JChannel channel) throws ECFException {

@@ -41,7 +41,6 @@ public class Activator implements BundleActivator {
 
 	private BundleContext context;
 
-	@SuppressWarnings("rawtypes")
 	private ServiceTracker logServiceTracker = null;
 
 	/**
@@ -115,7 +114,6 @@ public class Activator implements BundleActivator {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	protected LogService getLogService() {
 		if (logServiceTracker == null) {
 			logServiceTracker = new ServiceTracker(this.context, LogService.class.getName(), null);

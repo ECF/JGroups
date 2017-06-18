@@ -12,10 +12,9 @@ public class Activator implements BundleActivator {
 	private static Activator plugin;
 	@SuppressWarnings("unused")
 	private BundleContext context;
-	@SuppressWarnings("rawtypes")
 	private ServiceTracker containerManagerTracker;
 
-	@SuppressWarnings({ "unchecked", "rawtypes" })
+	@SuppressWarnings({ })
 	public void start(BundleContext context) throws Exception {
 		this.context = context;
 		plugin = this;
