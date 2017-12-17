@@ -83,7 +83,7 @@
     <dependency>
       <groupId>org.jgroups</groupId>
       <artifactId>jgroups</artifactId>
-      <version>4.0.3.Final</version>
+      <version>4.0.9.Final</version>
     </dependency>
   </dependencies>
 
