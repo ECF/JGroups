@@ -18,7 +18,7 @@ import org.jgroups.Address;
 public class JGroupsID extends URIID {
 	private static final long serialVersionUID = 8221231856444089704L;
 
-	private Address address;
+	private transient Address address;
 
 	public JGroupsID(Namespace ns, URI id) throws IDCreateException {
 		super(ns, id);
