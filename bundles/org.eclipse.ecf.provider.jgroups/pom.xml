@@ -10,5 +10,5 @@
   </parent>
   <artifactId>org.eclipse.ecf.provider.jgroups</artifactId>
   <packaging>eclipse-plugin</packaging>
-  <version>4.0.3-SNAPSHOT</version>
+  <version>4.0.100-SNAPSHOT</version>
 </project>
