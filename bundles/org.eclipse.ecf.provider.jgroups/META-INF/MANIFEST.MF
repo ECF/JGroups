@@ -1,9 +1,9 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
-Bundle-SymbolicName: org.eclipse.ecf.provider.jgroups;singleton:=true
+Bundle-SymbolicName: org.eclipse.ecf.provider.jgroups
 Automatic-Module-Name: org.eclipse.ecf.provider.jgroups
-Bundle-Version: 4.0.100.qualifier
+Bundle-Version: 4.1.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.jgroups.Activator
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
