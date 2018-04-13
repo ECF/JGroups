@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="JGroups Provider OxygenTarget" sequenceNumber="40">
+<?pde version="3.8"?><target name="JGroups Provider OxygenTarget" sequenceNumber="45">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.edit.ui.feature.group" version="2.13.0.v20170609-0928"/>
@@ -21,10 +21,26 @@
 </location>
 <location path="${project_loc:org.eclipse.ecf.provider.jgroups.target}/bundles" type="Directory"/>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-<unit id="org.eclipse.ecf.remoteservice.sdk.examples.feature.feature.group" version="1.0.100.v20180316-2313"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.examples.feature.source.feature.group" version="1.0.100.v20180316-2313"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.feature.feature.group" version="3.14.0.v20180316-2120"/>
-<unit id="org.eclipse.ecf.remoteservice.sdk.feature.source.feature.group" version="3.14.0.v20180316-2120"/>
+<unit id="org.apache.commons.codec" version="1.9.0.v20170208-1614"/>
+<unit id="org.apache.commons.logging" version="1.1.1.v201101211721"/>
+<unit id="org.apache.httpcomponents.httpclient" version="4.5.2.v20170210-0925"/>
+<unit id="org.apache.httpcomponents.httpcore" version="4.4.6.v20170210-0925"/>
+<unit id="org.eclipse.ecf.core.feature.feature.group" version="1.5.0.v20180412-2356"/>
+<unit id="org.eclipse.ecf.core.feature.source.feature.group" version="1.5.0.v20180412-2356"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.feature.group" version="1.1.100.v20180301-0201"/>
+<unit id="org.eclipse.ecf.core.ssl.feature.source.feature.group" version="1.1.100.v20180301-0201"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.feature.group" version="3.14.0.v20180306-0429"/>
+<unit id="org.eclipse.ecf.filetransfer.feature.source.feature.group" version="3.14.0.v20180306-0429"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.feature.group" version="3.14.0.v20180301-0132"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.feature.source.feature.group" version="3.14.0.v20180301-0132"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
+<unit id="org.eclipse.ecf.filetransfer.httpclient4.ssl.feature.source.feature.group" version="1.1.100.v20180301-0132"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.feature.group" version="1.1.100.v20180301-0132"/>
+<unit id="org.eclipse.ecf.filetransfer.ssl.feature.source.feature.group" version="1.1.100.v20180301-0132"/>
+<unit id="org.eclipse.ecf.remoteservice.sdk.examples.feature.feature.group" version="1.0.100.v20180402-2025"/>
+<unit id="org.eclipse.ecf.remoteservice.sdk.examples.feature.source.feature.group" version="1.0.100.v20180402-2025"/>
+<unit id="org.eclipse.ecf.remoteservice.sdk.feature.feature.group" version="3.14.0.v20180412-1942"/>
+<unit id="org.eclipse.ecf.remoteservice.sdk.feature.source.feature.group" version="3.14.0.v20180412-1942"/>
 <repository location="http://download.eclipse.org/rt/ecf/snapshot/site.p2"/>
 </location>
 </locations>
