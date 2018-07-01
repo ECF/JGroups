@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<?pde version="3.8"?><target name="JGroups Provider OxygenTarget" sequenceNumber="46">
+<?xml version="1.0" encoding="UTF-8" standalone="no"?><?pde version="3.8"?><target name="JGroups Provider OxygenTarget" sequenceNumber="46">
 <locations>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.emf.edit.ui.feature.group" version="2.14.0.v20180213-0527"/>
@@ -8,7 +7,7 @@
 <unit id="org.eclipse.pde.source.feature.group" version="3.13.100.v20180308-0630"/>
 <unit id="org.eclipse.platform.feature.group" version="4.8.0.v20180308-0630"/>
 <unit id="org.eclipse.platform.source.feature.group" version="4.8.0.v20180308-0630"/>
-<repository location="http://download.eclipse.org/releases/photon"/>
+<repository location="http://download.eclipse.org/releases/oxygen"/>
 </location>
 <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
 <unit id="org.eclipse.license.feature.group" version="1.0.1.v20140414-1359"/>
