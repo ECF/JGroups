@@ -6,14 +6,13 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.client.jgroups.Activator
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.osgi.framework;version="1.3.0"
+Import-Package: org.osgi.framework;version="1.3.0",
+ org.osgi.util.tracker
 Require-Bundle: org.eclipse.equinox.app,
  org.eclipse.ecf;bundle-version="3.0.0",
- org.eclipse.core.runtime;bundle-version="3.5.0",
  org.eclipse.ecf.provider.jgroups;bundle-version="1.3.0",
  org.eclipse.ecf.provider;bundle-version="2.0.0",
  org.eclipse.ecf.sharedobject;bundle-version="2.0.0",
- org.eclipse.jface;bundle-version="3.5.0",
- org.eclipse.ui;bundle-version="3.5.0"
+ org.eclipse.equinox.common;bundle-version="3.9.0"
 Export-Package: org.eclipse.ecf.client.jgroups
 
